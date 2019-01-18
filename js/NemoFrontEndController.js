@@ -61,13 +61,14 @@ define (
 					re: [
 						/^hotels$/,
 
-						//Search by URL params
+						// Search by URL params
 						// /123-20170801-20170803-ADT4INF2-ADT5INF4-ADT1
 						// 123 - hotel id (optional)
 						// 20170801 - arrival date (optional) (yyyymmdd)
 						// 20170803 - departure date (optional)
 						// -ADT4INF2 - 4 adults and 2 childs (optional) - (-ADT{X}INF{Y}) {X}, {Y} <= 9
-						/^hotels\/search\/(((\d)*(-)?)?(\d{8}(-)?)?(-\d{8})?(-ADT\d(CLD\d)?)*)$/
+						// GO - immediate search flag
+						/^hotels\/search\/(((\d)*(-)?)?(\d{8}(-)?)?(-\d{8})?(-ADT\d(CLD\d)?)*(-GO)?)$/
 					],
 					handler: 'Hotels/SearchForm/Controller'
 				},
@@ -292,7 +293,9 @@ define (
 					status: ko.observable('guest'),
 					isB2B: ko.observable(false),
 					settings: {
-						googleMapsApiKey: ko.observable('')
+						googleMapsApiKey: ko.observable(''),
+						currentCurrency: ko.observable('RUB'),
+						agencyCurrency: ko.observable('RUB')
 					}
 				},
 				languages: [
@@ -601,86 +604,50 @@ define (
 			var self = this;
 
 			// We use vanilla js because we don't know which of the third-party libraries are present on page
-			// TODO - make code more simple
-			if ( typeof XDomainRequest != "undefined" && typeof XMLHttpRequest === 'undefined') {
-				//This pitiful parody on a normal request is written solely for IE9. Kill it with fire when support will no longer be needed
-				var request = new XDomainRequest(),
-					POSTParams = '';
+			var request = new XMLHttpRequest(),
+				POSTParams = '';
 
-				if (typeof additionalParams == 'object' && additionalParams) {
-					POSTParams += (POSTParams ? '&' : '') + this.processPOSTParameters(additionalParams);
+			if (typeof this.options.postParameters === 'object' && this.options.postParameters) {
+				POSTParams += this.processPOSTParameters(this.options.postParameters);
+			}
+			if (typeof additionalParams === 'object' && additionalParams) {
+				POSTParams += (POSTParams ? '&' : '') + this.processPOSTParameters(additionalParams);
+			}
+
+			// A wildcard '*' cannot be used in the 'Access-Control-Allow-Origin' header when the credentials flag is true.
+			try {
+				request.withCredentials = this.options.CORSWithCredentials;
+				if(url.indexOf('frontendStatic') !== -1){
+					request.withCredentials = false;
 				}
+				request.open(POSTParams ? 'POST' : 'GET', url, true);
+			}
+			catch(e){
+				console.log('Ajax call threw this:'+e);
+				request.open(POSTParams ? 'POST' : 'GET', url, true);
+				request.withCredentials = this.options.CORSWithCredentials;
+			}
 
-				if (POSTParams) {
-					POSTParams = '?' + POSTParams;
+			if (POSTParams) {
+				if(request.setRequestHeader) {
+					request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 				}
+			}
 
-				request.open('GET', url + POSTParams);
-				request.onload = function(){
-					if(callback){
+			request.onreadystatechange = function() {
+				if (request.readyState === 4) {
+					if (request.status >= 200 && request.status < 400) {
 						self.processServerData(request.responseText);
 						callback(request.responseText, request);
-					}
-				};
-				request.onerror = function(){
-					if(errorCallback){
+					} else {
 						errorCallback(request);
 					}
-				};
-				request.onprogress = function(){ };
-				request.ontimeout = function(){ };
-				setTimeout(function(){
-					request.send();
-				}, 0);
-				return request
-			}
-			else {
-				var request = new XMLHttpRequest(),
-					POSTParams = '';
-
-				if (typeof this.options.postParameters == 'object' && this.options.postParameters) {
-					POSTParams += this.processPOSTParameters(this.options.postParameters);
 				}
-				if (typeof additionalParams == 'object' && additionalParams) {
-					POSTParams += (POSTParams ? '&' : '') + this.processPOSTParameters(additionalParams);
-				}
+			};
 
-				// A wildcard '*' cannot be used in the 'Access-Control-Allow-Origin' header when the credentials flag is true.
-				try {
-					request.withCredentials = this.options.CORSWithCredentials;
-					if(url.indexOf('frontendStatic') !== -1){
-						request.withCredentials = false;
-					}
-					request.open(POSTParams ? 'POST' : 'GET', url, true);
-				}
-				catch(e){
-					console.log('Ajax call threw this:'+e);
-					request.open(POSTParams ? 'POST' : 'GET', url, true);
-					request.withCredentials = this.options.CORSWithCredentials;
-				}
+			request.send(POSTParams);
 
-				if (POSTParams) {
-					if(request.setRequestHeader) {
-						request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-					}
-				}
-
-				request.onreadystatechange = function() {
-					if (request.readyState === 4) {
-						if (request.status >= 200 && request.status < 400) {
-							self.processServerData(request.responseText);
-							callback(request.responseText, request);
-						} else {
-							errorCallback(request);
-						}
-					}
-				};
-
-				request.send(POSTParams);
-
-				return request;
-			}
-
+			return request;
 		};
 
 		NemoFrontEndController.prototype.processServerData = function (responseText) {
@@ -701,6 +668,8 @@ define (
 					this.viewModel.user.status(data.system.info.user.status);
 					this.viewModel.user.isB2B(data.system.info.user.isB2B);
 					this.viewModel.user.settings.googleMapsApiKey(data.system.info.user.settings.googleMapsApiKey);
+					this.viewModel.user.settings.agencyCurrency(data.system.info.user.settings.agencyCurrency);
+					this.viewModel.user.settings.currentCurrency(data.system.info.user.settings.currentCurrency);
 
 					this.viewModel.agency.id(data.system.info.user.agencyID);
 					this.viewModel.agency.priceCurrency(data.system.info.user.settings.currentCurrency); // price currency
@@ -730,9 +699,24 @@ define (
 			// Used for packaged app
 			bundledName = 'html/' + template;
 
+			var templateSource = document.getElementById(template);
+
+			if (templateSource) {
+				// Load via script tag.
+				templateSource = {
+					element: templateSource
+				};
+			}
+			else {
+				// Load via AJAX.
+				templateSource = {
+					require: require.specified(bundledName) ? bundledName : 'text!' + self.options.templateSourceURL + template + '.html'
+				};
+			}
+
 			callback({
 				viewModel: { require: 'js/vm/' + name },
-				template: { require: require.specified(bundledName) ? bundledName : 'text!' + self.options.templateSourceURL + template + '.html' }
+				template: templateSource
 			});
 		};
 
@@ -1056,6 +1040,7 @@ define (
 			controllerSourceURL: '',
 			templateSourceURL: '',
 			hotelsTemplateSourceURL: '',
+			corporateHotelsShowcase: false,
 			createOrderLinkPrefixHotels: null,
 			dataURL: '',
 			staticInfoURL: '',

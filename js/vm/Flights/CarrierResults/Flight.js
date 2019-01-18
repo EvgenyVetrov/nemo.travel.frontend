@@ -6,14 +6,31 @@ define(
 
 			BaseModel.apply(this, arguments);
 
+			var i18n = this.$$controller.i18n.bind(this.$$controller);
+			var flightAirline = null;
+			var specialFamilyRules = [
+				{
+					departure: 'UUD',
+					arrival: 'ICN',
+					airline: 'R3'
+				},
+				{
+					departure: 'ICN',
+					arrival: 'UUD',
+					airline: 'R3'
+				},
+			];
+
 			this.depAirp = this.segments[0].depAirp;
 			this.arrAirp = this.segments[this.segments.length - 1].arrAirp;
 			this.depDateTime = this.segments[0].depDateTime;
 			this.arrDateTime = this.segments[this.segments.length - 1].arrDateTime;
 			this.transfers = [];
 			this.totalDistance = 0;
+			this.specialRules = [];
 
 			this.detailsOpen = ko.observable(false);
+			this.isHidden = ko.observable(false);
 
 			time = 0;
 			totalTime = 0;
@@ -31,7 +48,25 @@ define(
 					
 					totalTime += this.segments[i].depDateTime.getTimestamp() - this.segments[i - 1].arrDateTime.getTimestamp();
 				}
+
+				if (!flightAirline) {
+					flightAirline = this.segments[i].marketingCompany.IATA;
+				}
 			}
+
+			specialFamilyRules.forEach(function (rule) {
+				if (
+					flightAirline === rule.airline &&
+					this.depAirp.IATA === rule.departure &&
+					this.arrAirp.IATA === rule.arrival
+				) {
+					var title = i18n('FlightsSearchResults', 'carrierResults__familyWarning__' + rule.departure + '-' + rule.arrival, null, true);
+
+					if (title) {
+						this.specialRules.push(title);
+					}
+				}
+			}.bind(this));
 
 			this.timeEnRoute = this.$$controller.getModel('Common/Duration', time);
 			this.totalTimeEnRoute = this.$$controller.getModel('Common/Duration', totalTime);

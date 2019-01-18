@@ -14,13 +14,6 @@
 			}
 		}
 
-		&_404 &__dates {
-			&__date {
-				border-bottom-left-radius: 4px;
-				border-bottom-right-radius: 4px;
-			}
-		}
-
 		&:first-child {
 			margin-top: 0;
 		}
@@ -151,7 +144,7 @@
 				vertical-align: bottom;
 				max-width: 120px;
 				flex-basis: 100%;
-				border-radius: 4px 4px 0 0;
+				border-radius: 4px;
 				margin: 0 10px;
 				background: #fff;
 				cursor: pointer;
@@ -221,9 +214,58 @@
 					background: $nemo-color-main;
 					color: #ffffff;
 
+					padding-right: 0;
+					padding-bottom: 23px;
+					padding-left: 15px;
+					padding-top: 18px;
+
+					.flights-carrierResults__leg__dates__date {
+						&__date {
+							font-size: 41px;
+						}
+
+						&__price {
+							display: none;
+						}
+
+						&__DOW {
+							font-size: 15px;
+						}
+					}
+
 				//&, & * {
 				//	color: #fff;
 				//}
+				}
+			}
+		}
+
+		&__filters {
+			display: flex;
+			justify-content: center;
+			padding: 20px 20px 0;
+
+			&__directOnly {
+				padding-left: 10px;
+
+				&__checkbox {
+					padding: 8px 0;
+
+					&__caption {
+						&, &:hover {
+							color: #fff;
+						}
+					}
+				}
+			}
+
+			&__sort__select {
+				.nemo-ui-select__toggle {
+					height: 35px;
+					line-height: 35px;
+					font-size: 14px;
+					border-radius: 4px 4px 0 0;
+					min-width: 200px !important;
 				}
 			}
 		}
@@ -240,6 +282,10 @@
 
 			&__row {
 				display: table-row;
+
+				&_hidden {
+					display: none;
+				}
 			}
 
 		//&__row:nth-child(2n) &__flightInfo, &__row:nth-child(2n) &__fareForFlight {
@@ -594,6 +640,21 @@
 
 			&_adaptive {
 				display: none;
+			}
+
+			&-familyWarning {
+				color: #ff6767;
+				padding: 0 20px;
+				font-weight: 600;
+				cursor: pointer;
+
+				&__icon {
+					margin-right: 5px;
+				}
+
+				&__text {
+					border-bottom: 1px dashed;
+				}
 			}
 
 			&__header {

@@ -205,13 +205,17 @@ define(
 									result.push(airportModel);
 
 									// Push all inner airports next to it.
-									innerAirports.map(function (responseAirport) {
+									innerAirports.forEach(function (responseAirport) {
 										var innerAirportModel = viewModel.$$controller.getModel('Flights/Common/Geo', {
 											data: responseAirport,
 											guide: data.guide
 										});
 
+										// If airport belongs to some city.
 										innerAirportModel.insideAggregation = true;
+
+										// @FIXME: http://helpdesk.nemo.travel/issues/37869
+										innerAirportModel.replacement = forceAggregationAirports && autocompleteItem.isCity ? airportModel : null;
 
 										result.push(innerAirportModel);
 									});
@@ -244,68 +248,101 @@ define(
 						$(event.target).data('nemo-FlightsFormGeoAC').menu.activeMenu.removeClass('nemo-ui-autocomplete_open');
 					},
 					select: function(event, ui) {
-						$element.blur();
-						if(typeof ui.item.noRoute  !== 'undefined' && ui.item.noRoute){
+						var itemHasBeenSet = false;
 
+						$element.blur();
+
+						if (typeof ui.item.noRoute !== 'undefined' && ui.item.noRoute) {
 							// тут происходит сброс недопустимых маршрутов
 							valueAccessor()(ui.item);
 
+							itemHasBeenSet = true;
+
 							var $row = $element.parents('.js-autofocus-segment');
-							if(isDepartureInput){
+
+							if (isDepartureInput) {
 								viewModel.items.arrival.value(null);
-								setTimeout(function(){
+
+								setTimeout(function () {
 									$row.find('.js-autofocus-field_arrival').focus();
 								}, 100);
 							}
-							else{
+							else {
 								viewModel.items.departure.value(null);
-								setTimeout(function(){
+
+								setTimeout(function () {
 									$row.find('.js-autofocus-field_departure').focus();
 								}, 100);
 							}
 						}
-						// If a wanted airport has an aggregation airport (example: MOW owns DME) 
-						// and the corresponding setting is set, replace wanted airport with aggregation one.
-						else if (forceAggregationAirports && ui.item.aggregationIATA) {
-							var aggregationIATA = ui.item.aggregationIATA;
+						else if (forceAggregationAirports) {
+							var replacement = null;
 
-							if (
-								ui.item.pool.airports &&
-								ui.item.pool.airports[aggregationIATA] &&
-								ui.item.pool.airports[aggregationIATA].isAggregation === true
-							) {
-								// Aggregation exists, create corresponding search form model.
-								var aggregationItem = viewModel.$$controller.getModel('Flights/Common/Geo', {
-									data: ui.item.pool.airports[aggregationIATA],
-									guide: ui.item.pool
-								});
+							// Force replacement of the selected airport.
+							if (ui.item.replacement) {
+								replacement = ui.item.replacement;
+							}
+							// If a wanted airport has an aggregation airport (example: MOW owns DME)
+							// and the corresponding setting is set, replace wanted airport with the aggregation one.
+							else if (ui.item.aggregationIATA) {
+								var aggregationIATA = ui.item.aggregationIATA;
 
-								valueAccessor()(aggregationItem);
+								if (
+									ui.item.pool.cities &&
+									ui.item.pool.cities[ui.item.cityId] &&
+									ui.item.pool.cities[ui.item.cityId].IATA
+								) {
+									replacement = viewModel.$$controller.getModel('Flights/Common/Geo', {
+										data: {
+											IATA: ui.item.pool.cities[ui.item.cityId].IATA,
+											cityId: ui.item.cityId,
+											isCity: true
+										},
+										guide: ui.item.pool
+									});
+								}
+								else if (
+									ui.item.pool.airports &&
+									ui.item.pool.airports[aggregationIATA] &&
+									ui.item.pool.airports[aggregationIATA].isAggregation === true
+								) {
+									replacement = viewModel.$$controller.getModel('Flights/Common/Geo', {
+										data: ui.item.pool.airports[aggregationIATA],
+										guide: ui.item.pool
+									});
+								}
+							}
+
+							if (replacement) {
+								valueAccessor()(replacement);
+								itemHasBeenSet = true;
 							}
 						}
+
 						// If item has label - it's something other than geo point that should be in AC
 						// So we set corresponding stuff only if it's valid
-						else if (typeof ui.item.label == 'undefined') {
+						if (!itemHasBeenSet && typeof ui.item.label === 'undefined') {
 							valueAccessor()(ui.item);
 
-							if(onFocusAutocomplete){
-								//автофокус тут тупит, переписал на более хардкодный вариант
+							if (onFocusAutocomplete) {
+								// Автофокус тут тупит, переписал на более хардкодный вариант.
 								var $row = $element.parents('.js-autofocus-segment');
-								if(isDepartureInput){
-									if(viewModel.items.arrival.value()){
+
+								if (isDepartureInput) {
+									if (viewModel.items.arrival.value()) {
 										$row.find('.js-autofocus-field_date').focus();
 									}
-									else{
-										setTimeout(function(){
+									else {
+										setTimeout(function () {
 											$row.find('.js-autofocus-field_arrival').focus();
 										}, 100);
 									}
 								}
-								else{
+								else {
 									$row.find('.js-autofocus-field_date').focus();
 								}
 							}
-							else{
+							else {
 								// Autofocus stuff
 								$element.trigger('nemo.fsf.segmentPropChanged');
 							}
@@ -489,6 +526,10 @@ define(
 
 				if (ret.className === '' && viewModel.form.datesAvailable()[viewModel.index] && viewModel.form.datesAvailable()[viewModel.index][dateObj.getTime()]) {
 					ret.className = 'nemo-pmu-date_availables';
+				}
+
+				if (viewModel.form.disableUnavailableDate && (!viewModel.form.datesAvailable()[viewModel.index] || !viewModel.form.datesAvailable()[viewModel.index][dateObj.getTime()])) {
+					ret.disabled = true;
 				}
 
 				delete ret.segments;

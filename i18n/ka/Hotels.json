@@ -1,7 +1,7 @@
 {
     "hotels-misc-roomAdditionalWishes_title": "დამატებითი სურვილები ნომრის მიმართ",
     "hotels-misc-roomAdditionalWishes_hint": "დამატებითი საწოლები, ნომრები არამწეველთათვის, ტრანსფერი აეროპორტამდე.",
-    "hotels-buyer-title": "შეიყვანეთ თქვენი მონაცემები",
+    "hotels-buyer-title": "მყიდველი",
     "hotels-breadcrumbs-search": "სასტუმროს ძიება",
     "hotels-breadcrumbs-searchResults": "ძიების შედეგები",
     "hotels-breadcrumbs-booking": "დაჯავშნა",
@@ -24,6 +24,8 @@
     "hotels-room-meal__HB": "hotels-room-meal__HB",
     "hotels-room-meal__FB": "hotels-room-meal__FB",
     "hotels-room-meal__AI": "hotels-room-meal__AI",
+    "hotels-room-meal__LU": "hotels-room-meal__LU",
+    "hotels-room-meal__DN": "hotels-room-meal__DN",
     "hotels-room-cancel__rules__title": "ჯავშნის გაუქმების წესები",
     "hotels-room-cancel__isNonRefundable": "თანხა არ ბრუნდება",
     "hotels-room-cancel__isNonRefundable__tooltip": "გაუქმების შემთხვევაში თანხა არ ბრუნდება",
@@ -38,5 +40,8 @@
     "hotels-room-paymentType__Other": "გადაიხადეთ ახლა",
     "description": "სასტუმროს შესახებ",
     "location": "მდებარეობა",
-    "hotelServicesCaption": "მომსახურება და კომფორტი სასტუმროში"
+    "hotelServicesCaption": "მომსახურება და კომფორტი სასტუმროში",
+    "hotels-room-remarks__header": "hotels-room-remarks__header",
+    "hotels-room-remarks__toggle_opened": "hotels-room-remarks__toggle_opened",
+    "hotels-room-remarks__toggle_closed": "hotels-room-remarks__toggle_closed"
 }

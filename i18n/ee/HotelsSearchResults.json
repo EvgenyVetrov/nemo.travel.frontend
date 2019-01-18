@@ -8,6 +8,7 @@
     "filter__caption__results": "filter__caption__results",
     "sort__type__1": "sort__type__1",
     "sort__type__2": "sort__type__2",
+    "sort__type__3": "sort__type__3",
     "hotels__PF__hint": "hotels__PF__hint",
     "searchBox_map": "searchBox_map",
     "hotels__PF__clearPF": "hotels__PF__clearPF",
@@ -105,6 +106,8 @@
     "for": "for",
     "select": "select",
     "selected": "selected",
+    "needRequestForAvailabilityCheck_header": "needRequestForAvailabilityCheck_header",
+    "needRequestForAvailabilityCheck_desc": "needRequestForAvailabilityCheck_desc",
     "collapse": "collapse",
     "change": "change",
     "showAlsoVariants": "showAlsoVariants",
@@ -118,5 +121,7 @@
     "hotels__bookingCheck__error__error_unavailable": "hotels__bookingCheck__error__error_unavailable",
     "bookingCheck__link_to_searchResults": "bookingCheck__link_to_searchResults",
     "bookingCheck__link_to_mainPage": "bookingCheck__link_to_mainPage",
-    "hotels__hotelsChain": "hotels__hotelsChain"
+    "hotels__hotelsChain": "hotels__hotelsChain",
+    "hotels__showcase__corporate__header": "hotels__showcase__corporate__header",
+    "hotels__showcase__showMore": "hotels__showcase__showMore"
 }

@@ -8,6 +8,7 @@
     "filter__caption__results": "результатов",
     "sort__type__1": "по популярности",
     "sort__type__2": "по стоимости",
+    "sort__type__3": "по звездности",
     "hotels__PF__hint": "Найти нужный отель — быстро и просто. Пользуйтесь фильтрами!",
     "searchBox_map": "Поиск по карте",
     "hotels__PF__clearPF": "сбросить",
@@ -105,6 +106,8 @@
     "for": "за",
     "select": "Выбрать",
     "selected": "Выбран",
+    "needRequestForAvailabilityCheck_header": "Проверка мест по запросу",
+    "needRequestForAvailabilityCheck_desc": "Отель должен будет подтвердить доступность выбранного размещения. Вы будете уведомлены о результатах проверки на этапе бронирования.",
     "collapse": "Свернуть",
     "change": "Изменить",
     "showAlsoVariants": "Показать еще {value} {variants}",
@@ -118,5 +121,7 @@
     "hotels__bookingCheck__error__error_unavailable": "В выбранном отеле нет свободных номеров",
     "bookingCheck__link_to_searchResults": "Вернуться к результатам поиска",
     "bookingCheck__link_to_mainPage": "Новый поиск",
-    "hotels__hotelsChain": "Сеть отелей"
+    "hotels__hotelsChain": "Сеть отелей",
+    "hotels__showcase__corporate__header": "Отели с корпоративными тарифами",
+    "hotels__showcase__showMore": "Показать еще"
 }

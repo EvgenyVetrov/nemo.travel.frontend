@@ -49,7 +49,7 @@ define(
 			this.errorMessageAsIs = ko.observable(null);
 			this.$$loading = ko.observable(false);
 			this.PFActive = ko.observable(false);
-			this.currentCity = ko.observable('');
+			this.currentCity = ko.observable(null);
 			this.recentSearches = ko.observableArray(helpers.toArray(RecentSearchModel.getLast()));
 			this.bookingCheckInProgress = ko.observable(false);
 			this.bookingCheckError = ko.observable(null);
@@ -69,6 +69,7 @@ define(
 			this.oldMarkers = ko.observable([]);
 			this.searchInfo = ko.observable({});
 			this.resultsLoaded = ko.observable(false);
+			this.showCaseVisibleItems = ko.observable(4);
 			
 			this.guestsByRooms = ko.pureComputed(function () {
 				var searchInfo = this.searchInfo(),
@@ -245,7 +246,7 @@ define(
 									hotel = _.cloneDeep(self.hotelsPool[hotel.id]);
 								}
 	
-								self.$$controller.navigate('/hotels/results/' + getSearchId() + '/' + hotel.id, false, hotel.name);
+								self.$$controller.navigate('/hotels/results/' + getSearchId() + '/' + hotel.hotelIdFromSearch, false, hotel.name);
 								self.isCardHotelView(true);
 								RecentHotelsModel.add(hotel);
 	
@@ -269,7 +270,7 @@ define(
 			};
 
 			this.makeHotelLink = function (hotel) {
-				return '/hotels/results/' + getSearchId() + '/' + hotel.id;
+				return '/hotels/results/' + getSearchId() + '/' + hotel.resultsHotelId;
 			};
 
 			this.getHotelMainImage = function (hotel, defaultImage) {
@@ -311,7 +312,13 @@ define(
 				url = prefix + '?' + getParams;
 			}
 
-			url += '&roomIds=' + roomsInfo.join(',') + '&fromApi=true';
+			if (url.indexOf('?') !== -1){
+				url += '&';
+			}
+			else {
+				url += '?';
+			}
+			url += 'roomIds=' + roomsInfo.join(',') + '&fromApi=true';
 
 			function processError(error) {
 				error = error || '';
@@ -354,6 +361,18 @@ define(
 			this.bookingCheckError(null);
 			this.bookingCheckPriceChangeData(null);
 
+			function replaceHotelKeysWithIdFromSearchResults(hotels) {
+				var newHotelsObject = {};
+
+				for (var hotelId in hotels) {
+					if (hotels.hasOwnProperty(hotelId)) {
+						newHotelsObject[hotels[hotelId].hotelIdFromSearch] = hotels[hotelId];
+					}
+				}
+
+				return newHotelsObject;
+			}
+
 			if (!this.bookingCheckInProgress()) {
 				this.bookingCheckInProgress(true);
 
@@ -383,6 +402,11 @@ define(
 							}
 							else {
 								try {
+									if (data.hotels.search.results.info.errorCode === 404) {
+										throw 'No results';
+									}
+
+									data.hotels.search.results.hotels = replaceHotelKeysWithIdFromSearchResults(data.hotels.search.results.hotels);
 									this.processSearchResults(data);
 								}
 								catch (e) {

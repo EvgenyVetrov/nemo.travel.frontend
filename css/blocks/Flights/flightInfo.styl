@@ -31,6 +31,16 @@
 			}
 		}
 
+		&__logo, &__text {
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		&__charter {
+			color: #ff9731;
+			cursor: help;
+		}
+
 		&__route {
 			padding: 10px 20px;
 			font-size: 16px;
@@ -99,6 +109,27 @@
 			&__arrival {
 				flex: 0 0 32.5%;
 				min-width: 1px;
+			}
+
+			&__sunInfo {
+				color: #ff9731;
+				display: flex;
+				margin: 15px 0;
+				margin-left: 15px;
+				align-items: center;
+
+				&_noMargin {
+					margin: 0;
+				}
+
+				&:before {
+					background: url('images/sun.svg') no-repeat;
+					height: 20px;
+					width: 20px;
+					content: '';
+					display: inline-block;
+					padding-right: 10px;
+				}
 			}
 
 			&__additional {
@@ -201,6 +232,20 @@
 			&__terminalChange {
 				display: inline-block;
 				margin-left: 15px;
+				position: relative;
+				padding-left: 32px;
+
+				&:before {
+					background: url('images/transfer.svg');
+					content: '';
+					width: 17px;
+					height: 17px;
+					display: block;
+					background-size: 17px;
+					position: absolute;
+					top: 6px;
+					left: 0;
+				}
 			}
 		}
 

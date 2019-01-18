@@ -8,6 +8,7 @@
     "filter__caption__results": "შედეგების",
     "sort__type__1": "პოპულარობის მიხედვით",
     "sort__type__2": "ღირებულებით",
+    "sort__type__3": "sort__type__3",
     "hotels__PF__hint": "სასურველი  სასტუმროს ძიება - სწრაფად და მარტივად. გამოიყენეთ ფილტრები!",
     "searchBox_map": "რუკაზე ძებნა",
     "hotels__PF__clearPF": "hotels__PF__clearPF",
@@ -105,6 +106,8 @@
     "for": "თვის",
     "select": "არჩევა",
     "selected": "არჩეულია",
+    "needRequestForAvailabilityCheck_header": "needRequestForAvailabilityCheck_header",
+    "needRequestForAvailabilityCheck_desc": "needRequestForAvailabilityCheck_desc",
     "collapse": "ჩახურვა",
     "change": "ცვლილება",
     "showAlsoVariants": "მაჩვენე მეტი {value} {variants}",
@@ -118,5 +121,7 @@
     "hotels__bookingCheck__error__error_unavailable": "არჩეულ სასტუმროში არ არის თავისუფალი ადგილები",
     "bookingCheck__link_to_searchResults": "ძიების შედეგებთან დაბრუნება",
     "bookingCheck__link_to_mainPage": "ახალი ძიება",
-    "hotels__hotelsChain": "სასტუმროების ქსელი"
+    "hotels__hotelsChain": "სასტუმროების ქსელი",
+    "hotels__showcase__corporate__header": "hotels__showcase__corporate__header",
+    "hotels__showcase__showMore": "hotels__showcase__showMore"
 }

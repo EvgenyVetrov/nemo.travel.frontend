@@ -11,7 +11,7 @@ define(
 
 			this.postfiltersData = {
 				configs: {},
-				order: ['travelPolicies', 'price', 'transfersCount', 'carrier', 'transfersDuration', 'departureTime', 'arrivalTime', 'departureAirport', 'arrivalAirport', 'timeEnRoute','freeBaggage'],
+				order: ['travelPolicies', 'price', 'flightID', 'transfersCount', 'carrier', 'transfersDuration', 'departureTime', 'arrivalTime', 'departureAirport', 'arrivalAirport', 'timeEnRoute','freeBaggage'],
 				grouppable: ['departureTime', 'arrivalTime'],
 				preInitValues: {
 					carrier: null,
@@ -48,7 +48,7 @@ define(
 
 			this.groups = ko.observableArray([]);
 			this.visibleGroups = ko.observableArray([]);
-
+			this.visibleGroupsIds = ko.observable({});
 			this.shownGroups = ko.observable(this.baseShownGroups);
 			this.totalVisibleGroups = ko.observable(0);
 
@@ -1272,18 +1272,21 @@ define(
 		FlightsSearchResultsController.prototype.buildVisibleGroups = function () {
 			var groups = this.groups(),
 				newGroupList = [],
+				visibleIds = {},
 				c = 0;
 
 			for (var i = 0; i < groups.length; i++) {
 				if (!groups[i].filteredOut()) {
 					if (c < this.shownGroups()) {
 						newGroupList.push(groups[i]);
+						visibleIds[groups[i].id] = true;
 					}
 
 					c++;
 				}
 			}
 
+			this.visibleGroupsIds(visibleIds);
 			this.visibleGroups(newGroupList);
 			this.totalVisibleGroups(c);
 		};
@@ -1773,6 +1776,7 @@ define(
 			'Common/PostFilter/Config',
 			'Common/PostFilter/String',
 			'Common/PostFilter/Number',
+			'Common/PostFilter/Text',
 			'Flights/Common/Geo'
 		];
 
