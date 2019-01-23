@@ -35,6 +35,7 @@ define(
 			}
 
 			this.warnings = [];
+            this.TPwarnings = [];
 
 			// Dividing segments by leg
 			for (var i = 0; i < this.segments.length; i++) {

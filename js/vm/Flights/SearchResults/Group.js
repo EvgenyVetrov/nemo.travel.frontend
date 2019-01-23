@@ -189,6 +189,8 @@ define(
 			this.disclaimerIsVisible = this.resultsController.searchInfo().totalPassengers > 1 || 
 				this.isRefundable() === false ||
 				this.isRefundable() === true ||
+                this.hasTPwarnings() || // bizontrip
+                this.isOptimalFlight() || // bizontrip
 				(this.$$controller.viewModel.user.isB2B() && this.selectedFlight().expectedNumberOfTickets !== false);
 
 			this.fareVariationsVisible = !this.selectedFlight().canProcessFareFamilies && this.resultsController.options.showBlocks.showFareVariations &&
@@ -434,6 +436,15 @@ define(
 		Group.prototype.isRefundable = function () {
 			return this.flights[0].price.refundable;
 		};
+
+		/* bizontrip */
+        Group.prototype.isOptimalFlight = function () {
+            return this.flights[0].isOptimalFlight;
+        };
+        Group.prototype.hasTPwarnings = function () {
+            return this.flights[0].TPwarnings.length
+        };
+        /* end bizontrip */
 
 		return Group;
 	}

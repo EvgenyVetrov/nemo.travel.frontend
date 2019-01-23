@@ -1,0 +1,365 @@
+/*.nemo-common-postFilters__filterList__filter__caption__name {color: #414042}*/
+.nemo-flights-results__content__offers__text {color: #fff}
+.nemo-common-contentPageBody {background-color: #fff}
+.nemo-flights-results__flightsGroup__footer__buyButtonContainer {
+    position: relative;
+}
+.nemo-flight-results__lowestPrice {
+    display: none;
+    background: transparent url("spec.png");
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    left: -45px;
+}
+
+.nemo-flight-results__lowestPrice_true {
+    display: block;
+}
+.nemo-flights-results__couplingTable__buyButton::after,
+.nemo-flights-results__flightsGroup__buyButton::after,
+.nemo-flights-results__flightsListGroup__buyButton::after {
+    box-shadow: 0 0px 5px rgba(0,0,0,0.4) !important;
+}
+
+.nemo-common-contentPageBody .tooltipster-base > div{
+    padding-bottom:10px !important;
+}
+
+.nemo-flights-results__flightsGroup__footer__passengersDisclaimer_nonRefundable{
+    display:none !important;
+    /*color:#ec4646 !important;*/
+}
+
+.nemo-flights-results__flightsGroup__footer__passengersDisclaimer_refundable{
+    display:none !important;
+    /*color:#88c43d !important;*/
+}
+
+.nemo-flights-results__flightsGroup__footer__lowestFlight{
+    font-weight:bold !important;
+    color:#88c43d !important;
+}
+
+.nemo-common-contentPageBody .ui-widget-overlay{
+    background-image: none !important;
+}
+
+.nemo-common-contentPageBody .ui-widget-content{
+    padding:0 !important;
+}
+
+.nemo-flights-results__couplingTable__groups__buyGroup{
+    padding-right: 20px !important;
+}
+
+.nemo-flights-results__error {
+    max-width: 520px !important;
+}
+
+.nemo-flights-results__error__footer .nemo-ui-button:first-child{
+    float:left;
+}
+.nemo-common-contentPageBody .nemo-flights-form__searchingInfoPopup__header {
+    padding-left: 55px !important;
+}
+
+.nemo-flights-results__couplingTable {
+    padding: 10px 0 20px 0 !important;
+}
+
+.nemo-flights-results__bookingCheck_error{
+    padding:20px;
+}
+
+.nemo-flights-results__couplingTable__buyButton,
+.nemo-flights-results__flightsListGroup__buyButton,
+.nemo-flights-results__flightsGroup__buyButton{
+    background:#ffd321;
+    box-shadow: 0 4px 8px 0 #f2e8be,inset 0 1px 2px 0 #ffe064;
+}
+
+.nemo-flights-results__couplingTable__buyButton,
+.nemo-flights-results__flightsListGroup__buyButton,
+.nemo-flights-results__flightsGroup__buyButton,
+.nemo-flights-results__couplingTable__buyButton__text{
+    color:#353b42;
+}
+
+.nemo-flights-results__couplingTable__buyButton:hover,
+.nemo-flights-results__flightsListGroup__buyButton:hover,
+.nemo-flights-results__flightsGroup__buyButton:hover{
+    background:#ffdb4b;
+}
+
+.nemo-flights-results__couplingTable__buyButton__lowestPrice,
+.nemo-flights-results__flightsGroup__buyButton__lowestPrice{
+    background: #88c43d;
+    box-shadow: 0 4px 8px 0 rgba(93,134,41,.25),inset 0 1px 2px 0 #b8dc8b;
+    color:#fff;
+}
+
+.nemo-flights-results__couplingTable__buyButton__lowestPrice .nemo-flights-results__couplingTable__buyButton__text{
+    color:#fff;
+}
+
+.nemo-flights-results__couplingTable__buyButton__lowestPrice:hover,
+.nemo-flights-results__flightsGroup__buyButton__lowestPrice:hover{
+    background: #94ca51;
+}
+
+.nemo-common-contentPageBody .ui-dialog-titlebar{
+    padding-top: 10px !important;
+    padding-right:40px !important;
+    padding-bottom:10px !important;
+}
+
+.nemo-common-contentPageBody .ui-dialog-title{
+    margin:0 !important;
+    font-weight:400 !important;
+}
+
+.nemo-flights-results__flightInfoPopup,
+.nemo-flights-results__flightsGroup__flightInfo{
+padding: 0 !important;
+}
+.nemo-flights-results__flightInfoPopup{
+    padding:10px !important;
+    background: none !important;
+}
+
+.nemo-flights-results__flightInfoPopup .nemo-flights-flightInfo{
+    background: #fff !important;
+}
+
+.nemo-common-contentPageBody .ui-dialog-titlebar-close:hover {
+    background-color: rgba(0,0,0,.05) !important;
+}
+.nemo-common-breadCrumbs__inner{
+    padding:5px 0 !important;
+    max-width: none !important;
+}
+.nemo-flights-results__couplingTable__buyButton__lowestPrice,
+.nemo-flights-results__flightsGroup__buyButton__lowestPrice
+{
+    border: none !important;
+}
+
+@media (min-width: 751px) {
+    .nemo-flights-results__summary{
+        padding-top: 20px !important;
+    }
+}
+.nemo-ui-slider {
+    background-color: rgba(100,100,100,.75) !important;
+    border: 0 !important;
+}
+.nemo-ui-slider .ui-slider-range, .nemo-ui-slider{
+    border-radius: 0 !important;
+}
+.nemo-ui-slider .ui-slider-handle{
+    top: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    background-color: #fff !important;
+}
+.nemo-common-contentPageBody .ui-slider .ui-slider-handle::after{
+    background: none !important;
+}
+.nemo-ui-slider_range{
+    background: none !important;
+    background-color: rgba(100,100,100,.75) !important;
+}
+.nemo-ui-slider .ui-slider-range{
+    background: none !important;
+    background-color: #64b5f6 !important;
+}
+.nemo-flights-results__summary__route__segment{
+    margin-right: 50px !important;
+}
+
+.nemo-common-contentPageBody .ui-button-icon-primary.ui-icon.ui-icon-closethick{
+    background: none !important;
+}
+.nemo-common-contentPageBody .ui-state-default{
+    border:0 !important;
+}
+.nemo-common-contentPageBody .ui-dialog-titlebar-close{
+    background: transparent url(/img/ui/popup-close.svg) center center no-repeat !important;
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    width: 30px !important;
+    height: 30px !important;
+    margin-top:0 !important;
+}
+
+.nemo-flights-form.js-autofocus-form.js-nemoApp__component{
+    margin-top:0 !important;
+}
+
+.nemo-flights-results.js-nemoApp__component{
+    background-color: #63636c !important;
+    margin: 0 -20px !important;
+}
+.nemo-flights-results__summary{
+    padding-top: 10px !important;
+    padding-left:20px !important;
+    padding-right:20px !important;
+}
+.nemo-flights-results__content{
+    padding-left:10px !important;
+    padding-right:10px !important;
+}
+
+@media (max-width: 750px) {
+    .nemo-flights-results__summary{
+        padding-left:0 !important;
+        padding-right:0 !important;
+    }
+
+    .nemo-flights-results__summary .nemo-flights-results__summary__inner{
+        padding:10px 20px !important;
+    }
+    .nemo-ui-button.nemo-ui-button_common.nemo-flights-results__summary__filterSwitch.js-flights-results__adaptiveFiltersNoClose{
+        margin-left:20px !important;
+    }
+}
+.ui-dialog-buttonpane .ui-button:focus{
+    box-shadow: 0 0 8px #c8c8c8 !important;
+}
+
+.nemo-ui-button_disabled {
+    background: #cdcdcd !important;
+    cursor: default;
+    color:#fff !important;
+    box-shadow: 0 0 8px #b3b3b3 !important;
+}
+
+@media (max-width: 470px){
+    .optimal_variants_list {
+        margin-top: 10px !important;
+    }
+}
+
+.nemo-flights-results__content__results {
+    -ms-flex-preferred-size:82%;
+    flex-basis:82%
+}
+.nemo-flights-results__content__offers {
+    display: none;
+}
+.nemo-flights-results__content {
+    max-width: 1220px;
+}
+@media (min-width:1666px) {
+    .nemo-flights-results__content {
+        max-width: 1340px;
+    }
+}
+
+@media (max-width:940px) {
+    .nemo-flights-results__content__results {
+        -ms-flex-preferred-size:100%;
+        flex-basis:100%
+    }
+}
+
+.nemo-flights-results__flightsGroup__buyButton_bookingCheck money{
+    display:none;
+}
+
+.nemo-flights-farerules__content{
+    margin:0 !important;
+}
+
+@media (max-width:640px) {
+    .nemo-flights-results.js-nemoApp__component{
+        background-color: #63636c !important;
+        margin: 0 -10px !important;
+    }
+    .nemo-flights-results__content{
+        padding:0 !important;
+    }
+}
+
+.nemo-flights-results__flightsGroup__footer{
+    position:relative;
+}
+
+.nemo-flights-results__flightsGroup__footer__TP_content,
+.nemo-flights-results__flightsGroup__footer__disclaimer{
+    text-align: left !important;
+    direction: ltr !important;
+}
+
+.nemo-flights-results__flightsGroup__footer__TP_content{
+    display:none;
+    margin-bottom:-10px;
+}
+
+.nemo-flights-results__flightsGroup__footer__TP_content_opened{
+    display:block !important;
+}
+
+.nemo-flights-results__flightsGroup__footer__TP_header{
+    font-weight:bold !important;
+    color:#ff7f17 !important;
+    margin-left:5px;
+    position: relative;
+    cursor:pointer;
+    text-align: left !important;
+    line-height:21px;
+}
+
+.nemo-flights-results__flightsGroup__footer__TP_content_list{
+    position:relative;
+}
+.nemo-flights-results__flightsGroup__footer__lowestFlight{
+    display:block !important;
+}
+
+.nemo-flights-results__flightsListGroup__gds-comission-block{
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+}
+
+.nemo-flights-results__flightsListGroup__gds-comission-block__gds{
+    padding-top:10px !important;
+}
+.nemo-flights-results__flightsListGroup__gds-comission-block__gds__pricingDebugLink{
+    padding-top:10px !important;
+}
+
+.nemo-flights-flightInfo__leg__segment{
+    width:100%;
+}
+.nemo-flights-flightInfo__leg__segment,
+.nemo-flights-flightInfo__leg__segment__departure,
+.nemo-flights-flightInfo__leg__segment__arrival,
+.nemo-flights-flightInfo__leg__segment__additional{
+    display:inline-block;
+}
+
+.nemo-flights-farerules__content__segments__segment__button{
+    line-height: 25px !important;
+    height: inherit !important;
+    padding: 5px 20px !important;
+}
+
+@media (max-width:1100px) {
+    .nemo-flights-results__content__postfilters {
+        display: none;
+    }
+    .nemo-flights-results__content__results {
+        -ms-flex-preferred-size: 100%;
+        flex-basis: 100%;
+    }
+}
+
+
+
+.nemo-flights-form__additional__item {
+    display: none !important;
+}
