@@ -121,6 +121,8 @@ define(
 			this.isResultsOutdated = ko.observable(false);
 
 			this.resultsLoaded = ko.observable(false);
+            this.hasOptimalVariants = ko.observable(false); // bizontrip
+            this.optimalVariants = []; // bizontrip
 			this.showMaps = ko.observable(false);
 
 			this.bookingCheckInProgress = ko.observable(false);
@@ -1531,6 +1533,35 @@ define(
 				this.showcase.main(tmp);
 				this.showcase.mainFlightsCount(mainCount);
 			}
+
+
+
+
+            // --> bizontrip
+            if (!this.optimalVariants.length) {
+                for (var j in this.groups()) {
+                    if ((typeof(this.groups()[j]) === 'object') && this.groups()[j].isOptimalFlight()) {
+                        // this.flights[j].tpReject === false
+                        if (this.groups()[j].flights[0].tpReject === false) {
+                            this.optimalVariants.push(this.groups()[j]);
+                        }
+                    }
+                }
+
+                this.optimalVariants.sort(function (a, b) {
+                    return a.getTotalPrice().normalizedAmount() - b.getTotalPrice().normalizedAmount();
+                });
+
+                for (var j in this.flights) {
+                    if (this.flights.hasOwnProperty(j)) {
+                        if (this.flights[j].isOptimalFlight && this.flights[j].tpReject === false) {
+                            this.hasOptimalVariants(ko.observable(true));
+                        }
+                    }
+                }
+            }
+            // <-- end bizontrip
+
 
 			if (this.options.showBlocks.showBestOffers && !this.showcase.bestCompanies()) {
 				for (var i = 0; i < this.marketingAirlinesByRating.length; i++) {

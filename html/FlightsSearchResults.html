@@ -8,7 +8,7 @@
 	}}"></div>
 <!-- /ko -->
 
-<div class="nemo-flights-results js-nemoApp__component" data-bind="setBodyClass: 'nemo-common-contentPageBody'">
+<div class="nemo-flights-results js-nemoApp__component" data-bind="setBodyClass: 'nemo-common-contentPageBody', attr:{style: expandPanel}"> <!-- bizontrip upgrade -->
 	<!-- ko if: $$loading -->
 	<div class="nemo-flights-results__loader"></div>
 	<!-- /ko -->
@@ -114,6 +114,15 @@
 			<!-- /ko -->
 
 			<div class="nemo-flights-results__error__footer">
+
+
+				<!-- bizontrip -->
+				<div class="nemo-ui-button" data-bind="
+					text: $root.i18n('FlightsSearchResults', 'save_offline'),
+					click: function () { set_offline('/trip/setoffline/?serviceId=' + nemoBaseUrl.replace('/flight/search/', '')) }"></div>
+				<!-- /end bizontrip -->
+
+
 				<div class="nemo-ui-button nemo-ui-button_main nemo-flights-results__error__footer__button" data-bind="
 					text: $root.i18n('FlightsSearchResults', 'error_' + error() + '_buttonText'),
 					click: function () {$$controller.navigate(id ? '/search/' + id + '/' + $root.helpers.getFlightsRouteURLAdder('search', searchInfo()) : '', true, 'FlightsSearch');}
@@ -332,6 +341,16 @@
 			<div class="nemo-ui-subContainer__divider nemo-ui-subContainer__divider_bigMargin nemo-flights-results__content__results__loadingDummyDivider"></div>
 			<!-- /ko -->
 
+
+        <!-- bizontrip> -->
+        <!-- ko if: hasOptimalVariants() && !postFiltersHaveValue() && resultsLoaded() -->
+        <div data-bind="foreach: optimalVariants, attr:{'class':'nemo-flights-results__groupList optimal_variants_list mb-10 mt-m10-sm mt-m10-md mt-m10-lg no-padding-top nemo-flights-results__groupList_' + displayType()}">
+            <!-- ko if: selectedFlight().isOptimalFlight && selectedFlight().getTotalPrice() -->
+            <div class="nemo-flights-results__groupList__item" data-bind="template: {name: 'nemo-koTemplate-FlightsResults-Group_' + $parent.displayType(), data: $data}"></div>
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+        <!-- <bizontrip -->
 
 
 			<!-- ko if: !resultsLoaded() || showcase.main().length -->
@@ -574,8 +593,25 @@
 						' ' +
 						'nemo-flights-results__flightsGroup_legsCount_' + legGroupings.length +
 						(carriersMismatch() ? ' nemo-flights-results__flightsGroup_carriersMismatch' : ''),
-				'data-groupanchorid':$data.id
-			}">
+				'data-groupanchorid':$data.id},
+
+
+
+
+
+
+
+
+        css: {'nemo-flight-results__lowestPrice_panel': selectedFlight().isLowestPrice || selectedFlight().isOptimalFlight}">
+
+
+
+
+
+
+
+
+
 	<div class="nemo-ui-subContainer__header nemo-flights-results__flightsGroup__header"data-bind="attr: {'style': getFirstSegmentMarketingCompany().colors.companyColor && !carriersMismatch() ?'background: ' + getFirstSegmentMarketingCompany().colors.companyColor + ';' + (getFirstSegmentMarketingCompany().colors.companyColorAdditional ?'background: -moz-linear-gradient(to right, '+getFirstSegmentMarketingCompany().colors.companyColorAdditional+', '+getFirstSegmentMarketingCompany().colors.companyColor+');' +'background: -webkit-linear-gradient(to right, '+getFirstSegmentMarketingCompany().colors.companyColorAdditional+', '+getFirstSegmentMarketingCompany().colors.companyColor+');' +'background: -o-linear-gradient(to right, '+getFirstSegmentMarketingCompany().colors.companyColorAdditional+', '+getFirstSegmentMarketingCompany().colors.companyColor+');' +'background: -ms-linear-gradient(to right, '+getFirstSegmentMarketingCompany().colors.companyColorAdditional+', '+getFirstSegmentMarketingCompany().colors.companyColor+');' +'background: linear-gradient(to right, '+getFirstSegmentMarketingCompany().colors.companyColorAdditional+', '+getFirstSegmentMarketingCompany().colors.companyColor+');': ''): 'background: #f9fafb'},flightsResultsClassByLuminocity: {className: 'nemo-flights-results__flightsGroup__header_luminocity',color: getFirstSegmentMarketingCompany().colors.companyColorAdditional || getFirstSegmentMarketingCompany().colors.companyColor || '#ffffff',luma: 185}"><!-- ko if: $parent.showcaseModifiers --><div class="nemo-flights-results__flightsGroup__header__showcase" data-bind="foreach: $parent.showcaseModifiers"><!-- ko if: $data != 'joined' --><div data-bind="attr: {class: 'nemo-flights-results__flightsGroup__header__showcase__item nemo-flights-results__flightsGroup__header__showcase__item_' + $data},tooltip: {content: $root.i18n('FlightsSearchResults','flightsGroup__header_' + $data),cssClass: 'nemo-flights-results__flightsGroup__header__showcase__item__tooltip'}"></div><!-- /ko --></div><!-- /ko --><div class="nemo-flights-results__flightsGroup__header__title" data-bind="css: {'nemo-flights-results__flightsGroup__header__title_showcase' : $parent.showcaseModifiers},visible: !carriersMismatch() || $parent.modifier"><span class="nemo-flights-results__flightsGroup__header__title__text" data-bind="text: $parent.modifier && $parent.modifier != 'bestCompanies' ? $root.i18n('FlightsSearchResults', 'flightsGroup__header_' + $parent.modifier.replace('_joined','')) : getFirstSegmentMarketingCompany().name,"></span></div><div class="nemo-flights-results__flightsGroup__header__additional" data-bind="css: {'nemo-flights-results__flightsGroup__header__additional_showcase' : $parent.showcaseModifiers,'nemo-flights-results__flightsGroup__header__additional_carriersMismatch' : carriersMismatch() && !($parent.showcaseModifiers || $parent.modifier)}"><div class="nemo-flights-results__flightsGroup__rating nemo-flights-results__flightsGroup__rating_inHeader"data-bind="foreach: selectedFlight().ratingItems,tooltip: {content: $root.i18n('FlightsSearchResults','flightsGroup__rating__tooltip__header').replace('[%-rating-%]', selectedFlight().recommendRating).replace('[%-maxRating-%]', selectedFlight().ratingMaximumValue),cssClass: 'nemo-flights-results__flightsGroup__rating__infoTooltip nemo-flights-results__flightsGroup__rating__infoTooltip_inHeader'}"><div class="nemo-flights-results__flightsGroup__rating__item" data-bind="if: $data > 0"><div class="nemo-flights-results__flightsGroup__rating__item__inner" data-bind="attr: {style: 'width: ' + ($data * 100) + '%'}"></div></div></div><!-- ko if: !carriersMismatchArray().length  --><img class="nemo-flights-results__flightsGroup__header__logo"data-bind="attr: {src: $root.controller.options.staticInfoURL + (carriersMismatch() ? getFirstSegmentMarketingCompany().logo.image : getFirstSegmentMarketingCompany().monochromeLogo.image)},tooltip: {content: getFirstSegmentMarketingCompany().name,cssClass: 'nemo-flights-results__flightsGroup__header__logoTooltip'},css: {'nemo-flights-results__flightsGroup__header__logo__mismatch': carriersMismatch()}"><!-- /ko --><!-- ko if: carriersMismatch --><!-- ko if: carriersMismatchArray().length <= 1 && !$parent.showcaseModifiers && $parent.modifier !== 'bestCompanies' --><img class="nemo-flights-results__flightsGroup__header__logo"data-bind="attr: {src: $root.controller.options.staticInfoURL + (carriersMismatch() ? getFirstSegmentMarketingCompany().logo.image : getFirstSegmentMarketingCompany().monochromeLogo.image)},tooltip: {content: getFirstSegmentMarketingCompany().name,cssClass: 'nemo-flights-results__flightsGroup__header__logoTooltip'},css: {'nemo-flights-results__flightsGroup__header__logo__mismatch': carriersMismatch()}"><!-- ko foreach: carriersMismatchArray --><img class="nemo-flights-results__flightsGroup__header__logo nemo-flights-results__flightsGroup__header__logo__mismatch"data-bind="attr: {src: $root.controller.options.staticInfoURL + logo.image},tooltip: {content: $data.name,cssClass: 'nemo-flights-results__flightsGroup__header__logoTooltip'}"><!-- /ko --><!-- /ko --><!-- ko if: carriersMismatchArray().length > 1 || $parent.showcaseModifiers || $parent.modifier === 'bestCompanies' --><img class="nemo-flights-results__flightsGroup__header__logo"data-bind="attr: {src: $root.controller.options.staticInfoURL + (carriersMismatch() ? getFirstSegmentMarketingCompany().logo.image : getFirstSegmentMarketingCompany().monochromeLogo.image)},tooltip: {header: $root.i18n('FlightsSearchResults','flightsGroup__header__carrierMismatch__header'),content: $root.i18n('FlightsSearchResults','flightsGroup__header__carrierMismatch__content').replace('[%-marketingCarrier-%]', getFirstSegmentMarketingCompany().name).replace('[%-operatingCarriers-%]',$root.helpers.smartJoin(carriersMismatchNames(),', ',$root.i18n('FlightsSearchResults','flightsGroup__header__carrierMismatch__carriersLastJoin'))),cssClass: 'nemo-flights-results__flightsGroup__header__logoTooltip'},css: {'nemo-flights-results__flightsGroup__header__logo__mismatch': carriersMismatch()}"><div class="nemo-flights-results__flightsGroup__header__carriersMismatch__notice"data-bind="tooltip: {header: $root.i18n('FlightsSearchResults','flightsGroup__header__carrierMismatch__header'),content: $root.i18n('FlightsSearchResults','flightsGroup__header__carrierMismatch__content').replace('[%-marketingCarrier-%]', getFirstSegmentMarketingCompany().name).replace('[%-operatingCarriers-%]',$root.helpers.smartJoin(carriersMismatchNames(),', ',$root.i18n('FlightsSearchResults','flightsGroup__header__carrierMismatch__carriersLastJoin'))),cssClass: 'nemo-flights-results__flightsGroup__header__infoTooltip nemo-flights-results__flightsGroup__header__carriersMismatch__tooltip'}"></div><!-- /ko --><!-- /ko --><!-- /ko --></div></div><div class="nemo-flights-results__flightsGroup__subHeader"><div class="nemo-flights-results__flightsGroup__subHeader__title"data-bind="text: $root.i18n('FlightsSearchResults', 'flightsGroup__subHeader__rating__caption')"></div><div class="nemo-flights-results__flightsGroup__subHeader__additional"><div class="nemo-flights-results__flightsGroup__rating nemo-flights-results__flightsGroup__rating_inSubHeader"data-bind="foreach: selectedFlight().ratingItems,tooltip: {content: $root.i18n('FlightsSearchResults','flightsGroup__rating__tooltip__header').replace('[%-rating-%]', selectedFlight().recommendRating).replace('[%-maxRating-%]', selectedFlight().ratingMaximumValue),cssClass: 'nemo-flights-results__flightsGroup__rating__infoTooltip nemo-flights-results__flightsGroup__rating__infoTooltip_inHeader'}"><div class="nemo-flights-results__flightsGroup__rating__item" data-bind="if: $data > 0"><div class="nemo-flights-results__flightsGroup__rating__item__inner" data-bind="attr: {style: 'width: ' + ($data * 100) + '%'}"></div></div></div></div></div><div data-bind="foreach: legGroupings, attr: {'class': 'nemo-flights-results__flightsGroup__legs nemo-flights-results__flightsGroup__legs_count_' + legGroupings.length}"><div class="nemo-flights-results__flightsGroup__leg"><div class="nemo-flights-results__flightsGroup__leg__info"data-bind="css: {'nemo-flights-results__flightsGroup__leg__info_direct': !$parent.selectedFlight().transfers[$index()].length},with: $parent.flights[0].legs[$index()]"><div class="nemo-flights-results__flightsGroup__leg__info__date"><span class="nemo-flights-results__flightsGroup__leg__info__date__day" data-bind="text: depDateTime.getDate() + ' ' + depDateTime.getMonthName()"></span><span class="nemo-flights-results__flightsGroup__leg__info__date__dayOfWeek" data-bind="text: ', ' + depDateTime.getDOWName()"></span></div><div class="nemo-flights-results__flightsGroup__leg__info__route"><div class="nemo-flights-results__flightsGroup__leg__info__route__departure" data-bind="text: depAirp.city.name || depAirp.name"></div><div class="nemo-flights-results__flightsGroup__leg__info__route__arrival" data-bind="text: arrAirp.city.name || arrAirp.name"></div></div></div><div class="nemo-flights-results__flightsGroup__leg__selector"><div class="nemo-flights-results__flightsGroup__leg__selector__header"><div class="nemo-flights-results__flightsGroup__leg__selector__header__title"><div class="nemo-flights-results__flightsGroup__leg__selector__header__title__text nemo-flights-results__flightsGroup__leg__selector__header__title__text_short""><!-- ko text: $root.i18n('FlightsSearchResults', $parent.selectedFlight().overlandTrip ? 'flightsGroup__selector__title_overlandTrip' : 'flightsGroup__selector__title') --><!-- /ko --></div><div class="nemo-flights-results__flightsGroup__leg__selector__header__title__text nemo-flights-results__flightsGroup__leg__selector__header__title__text_dates"data-bind="with: $parent.flights[0].legs[$index()]"><span class="nemo-flights-results__flightsGroup__leg__selector__header__title__text__day" data-bind="text: depDateTime.getDate() + ' ' + depDateTime.getMonthName()"></span><span class="nemo-flights-results__flightsGroup__leg__selector__header__title__text__dayOfWeek" data-bind="text: ', ' + depDateTime.getDOWName()"></span></div><!-- ko if: $parent.selectedFlight().legs[$index()].specialMark.name --><div class="nemo-flights-results__flightsGroup__leg__selector__header__title__text nemo-flights-results__flightsGroup__leg__selector__header__title__text_charter"data-bind="with: $parent.selectedFlight().legs[$index()].specialMark"><span class="nemo-flights-results__flightsGroup__leg__selector__header__title__text__charter"data-bind="text: label,tooltip: {content: desc}"></span></div><!-- /ko --><div class="nemo-flights-results__flightsGroup__leg__selector__header__title__date" data-bind="with: $parent.flights[0].legs[$index()]"><span class="nemo-flights-results__flightsGroup__leg__selector__header__title__date__day"data-bind="text: depDateTime.getDate() + ' ' + depDateTime.getMonthName()"></span><span class="nemo-flights-results__flightsGroup__leg__selector__header__title__date__dayOfWeek"data-bind="text: ', ' + depDateTime.getDOWNameShort()"></span></div></div><div class="nemo-flights-results__flightsGroup__leg__selector__header__seatsAvailable"data-bind="text:$parent.selectedFlight().legs[$index()].availSeats > 0 ?($parent.selectedFlight().legs[$index()].availSeats +'+ ' +$root.i18n('FlightsSearchResults','flightsGroup__availSeats_' + $root.helpers.getNumeral($parent.selectedFlight().legs[$index()].availSeats, 'one', 'twoToFour', 'fourPlus'))):'',css: {'nemo-flights-results__flightsGroup__leg__selector__header__seatsAvailable_warning' : $parent.selectedFlight().legs[$index()].availSeats > 0 && $parent.selectedFlight().seatsAvailThreshold >= $parent.selectedFlight().legs[$index()].availSeats}"></div></div><div class="nemo-ui-select nemo-flights-results__flightsGroup__leg__selector__selectContainer js-common-pseudoSelect"><div class="nemo-ui-select__toggle js-common-pseudoSelect__toggle nemo-flights-results__flightsGroup__leg__selector__selected nemo-flights-results__flightsGroup__leg__selector__selected__block"data-bind="css: {'nemo-flights-results__flightsGroup__leg__selector__selected_unopenable': selectableCount() <= 1},pseudoSelect: {adjustWidth: false, reposition: false},with: $parent.selectedFlight().legs[$index()]"><!-- ko if: $parent.selected().uncombinable().length > 0 --><div class="nemo-flights-results__flightsGroup__leg__selector__dropdown__option__uncombinableWarn"data-bind="text: $root.i18n('FlightsSearchResults', 'flightsGroup__selector__uncombinable_' + ($parent.selected().uncombinable().length == 1 ? 'one' : 'many')).replace('[%-numbers-%]',$root.helpers.smartJoin($parent.selected().uncombinable(),', ',$root.i18n('FlightsSearchResults','flightsGroup__selector__uncombinable__lastConjunction')))"></div><!-- /ko -->
 						<div class="nemo-flights-results__flightsGroup__leg__selector__selected__timeAndTimeEnRoute">
 							<div class="nemo-flights-results__flightsGroup__leg__selector__selected__time">
@@ -804,8 +840,18 @@
 				<div class="nemo-ui-button nemo-ui-button_main nemo-flights-results__flightsGroup__buyButton"
 					data-bind="
 						css: {
-							'nemo-ui-button_disabled': selectedFlightsIds().length == 0,
+
+
+
+
+							'nemo-ui-button_disabled': (selectedFlightsIds().length == 0) || selectedFlight().tpReject,
+                                                        'nemo-flights-results__flightsGroup__buyButton__lowestPrice': selectedFlight().isOptimalFlight,
 							'nemo-flights-results__flightsGroup__buyButton_warning': selectedFlightsIds().length > 0 && selectedFlight().warnings.length
+
+
+
+
+
 						},
 						flightsResultsBuyButtonFlightCheck: {
 							ids: selectedFlightsIds(),
@@ -824,6 +870,42 @@
 	<!-- ko if: resultsController.searchInfo().totalPassengers > 1 -->
 		<div class="nemo-flights-results__flightsGroup__footer__disclaimer nemo-flights-results__flightsGroup__footer__disclaimer_priceForAll" data-bind="html: $root.i18n('FlightsSearchResults','flightsGroup__footer__passengersDisclaimer')"></div>
 	<!-- /ko -->
+
+
+
+
+
+            <!-- bizontrip -->
+            <div class="clearfix"></div>
+
+            <!-- ko if: isRefundable() === false -->
+            <div class="nemo-flights-results__flightsGroup__footer__disclaimer pull-left nemo-flights-results__flightsGroup__footer__passengersDisclaimer_nonRefundable nemo-flights-results__flightsGroup__footer__disclaimer_nonRefundable"
+                 data-bind="html: $root.i18n('FlightsSearchResults','flightsGroup__footer__passengersDisclaimer_nonRefundable')"></div>
+            <!-- /ko -->
+
+            <!-- ko if: isRefundable() === true -->
+            <div class="nemo-flights-results__flightsGroup__footer__disclaimer pull-left nemo-flights-results__flightsGroup__footer__passengersDisclaimer_refundable nemo-flights-results__flightsGroup__footer__disclaimer_refundable"
+                 data-bind="html: $root.i18n('FlightsSearchResults','flightsGroup__footer__passengersDisclaimer_refundable')"></div>
+            <!-- /ko -->
+
+            <!-- ko if: isOptimalFlight() === true  && selectedFlight().isOptimalFlight  -->
+            <div class="nemo-flights-results__flightsGroup__footer__disclaimer pull-left nemo-flights-results__flightsGroup__footer__lowestFlight" data-bind="html: $root.i18n('FlightsSearchResults','flightsGroup__footer__lowestFlight')"></div>
+            <!-- /ko -->
+            <div class="clearfix"></div>
+
+            <!-- ko if: selectedFlight().TPwarnings.length -->
+            <div class="pb-10 pt-4"><span class="status-mark bg-orange"></span>
+                <span class="dot nemo-flights-results__flightsGroup__footer__TP_header"
+                      data-bind="html: $root.i18n('FlightsSearchResults','TP__accept_false_short')"></span></div>
+            <div class="nemo-flights-results__flightsGroup__footer__TP_content mb-m5"
+                 data-bind="html: $root.i18n('FlightsSearchResults',selectedFlight().TPwarnings[1].text)"></div>
+            <!-- /ko -->
+            <!-- end bizontrip -->
+
+
+
+
+
 
 	<!-- ko if: $root.controller.viewModel.user.isB2B() && selectedFlight().expectedNumberOfTicketsText -->
 		<div class="nemo-flights-results__flightsGroup__footer__disclaimer nemo-flights-results__flightsGroup__footer__disclaimer_expectedNumberOfTickets">
@@ -844,6 +926,18 @@
 	<!-- ko if: $root.controller.viewModel.user.isB2B() && typeof(selectedFlight().price.service) !== 'undefined' -->
 		<span class="nemo-flights-results__flightsGroup__managerInfoBlock__item nemo-flights-results__flightsGroup__managerInfoBlock__supplier" data-bind="text: selectedFlight().price.service"></span>
 	<!-- /ko -->
+
+
+
+
+        <!-- bizontrip -->
+        <!-- ko if: window.isTmcCurrentUser -->
+        <span class="nemo-flights-results__flightsGroup__managerInfoBlock__item nemo-flights-results__flightsGroup__managerInfoBlock__supplier" data-bind="text: selectedFlight().price.service"></span>
+        <!-- /ko  -->
+        <!-- /bizontrip -->
+
+
+
 
 	<!-- ko if: typeof(selectedFlight().price.pricingDebug) !== 'undefined' -->
 		<div class="nemo-flights-results__flightsGroup__managerInfoBlock__item nemo-flights-results__flightsGroup__managerInfoBlock__pricingDebug">
@@ -1024,7 +1118,19 @@
 			<!-- /ko -->
 			<div data-bind="
 					css: {
-						'nemo-ui-button_disabled': selectedFlightsIds().length == 0,
+
+
+
+
+
+					    'nemo-ui-button_disabled': selectedFlightsIds().length == 0 || selectedFlight().tpReject,
+						'nemo-flights-results__flightsGroup__buyButton__lowestPrice': selectedFlight().isOptimalFlight,
+
+
+
+
+
+
 						'nemo-flights-results__flightsListGroup__buyButton_warning': selectedFlightsIds().length > 0 && selectedFlight().warnings.length
 					},
 					flightsResultsBuyButtonFlightCheck: {
@@ -1090,6 +1196,32 @@
 			</div>
 			<!-- /ko -->
 
+
+
+
+            <!-- bizontrip > -->
+            <div class="clearfix"></div>
+            <!-- ko if: isOptimalFlight() === true -->
+            <div class="pt-10 nemo-flights-results__flightsGroup__footer__disclaimer nemo-flights-results__flightsGroup__footer__lowestFlight" data-bind="html: $root.i18n('FlightsSearchResults','flightsGroup__footer__lowestFlight')"></div>
+            <!-- /ko -->
+            <div class="clearfix"></div>
+
+            <!-- ko if: selectedFlight().TPwarnings.length -->
+            <div class="text-left ltr">
+                <div class="pb-10 pt-4">
+                    <span class="status-mark bg-orange"></span>
+                    <span class="dot nemo-flights-results__flightsGroup__footer__TP_header"
+                          data-bind="html: $root.i18n('FlightsSearchResults','TP__accept_false_short')"></span>
+                </div>
+                <div class="nemo-flights-results__flightsGroup__footer__TP_content nemo-flights-results__flightsGroup__footer__TP_content_list"
+                     data-bind="html: $root.i18n('FlightsSearchResults',selectedFlight().TPwarnings[1].text)"></div>
+            </div>
+            <!-- /ko -->
+            <!-- < end bizontrip -->
+
+
+
+
 			<div class="nemo-flights-results__flightsListGroup__footer__couplingButtonContainer" data-bind="if: couplingTable && couplingTable.isActive">
 				<span class="nemo-ui-pseudoLink"
 					 data-bind="popup: {
@@ -1138,7 +1270,7 @@
 				<!-- /ko -->
 			</div>
 			<!-- ko if: getSubagentProfit() && getSubagentProfit().amount() > 0 -->
-				<div class="nemo-flights-results__flightsListGroup__profit">
+				<div class="nemo-flights-results__flightsListGroup__profit            mt-10">
 					<span class="nemo-flights-results__flightsListGroup__profit__text"
 						  data-bind="html: $root.i18n('FlightsSearchResults','flightsGroup__footer__subagentProfit')">
 					</span>
@@ -2021,7 +2153,20 @@
 					<div class="nemo-ui-button nemo-ui-button_main nemo-flights-results__couplingTable__buyButton" data-bind="
 						css: {
 							'nemo-flights-results__couplingTable__buyButton_inactive': $data != $parent.selected(),
-							'nemo-flights-results__couplingTable__buyButton_warning': $parents[1].flightsById[$data.cheapestId].warnings.length
+							'nemo-flights-results__couplingTable__buyButton_warning': $parents[1].flightsById[$data.cheapestId].warnings.length,
+
+
+
+
+
+
+
+							'nemo-flights-results__couplingTable__buyButton__lowestPrice': $parents[1].flightsById[$data.cheapestId].isLowestPrice || $parents[1].flightsById[$data.cheapestId].isOptimalFlight,
+
+
+
+
+
 						},
 						click: function () {
 							if ($data != $parent.selected()) {
@@ -2195,7 +2340,16 @@
 						<button class="nemo-ui-button nemo-flights-results__compareTable__groupsItem__buyButton"
 						        data-bind="
 							        css: {
-										'nemo-ui-button_disabled': selectedFlightsIds().length == 0,
+										'nemo-ui-button_disabled': selectedFlightsIds().length == 0
+
+
+
+								         || selectedFlight().tpReject,
+
+
+
+
+
 										'nemo-flights-results__flightsListGroup__buyButton_warning': selectedFlightsIds().length > 0 && selectedFlight().warnings.length
 									},
 									flightsResultsBuyButtonFlightCheck: {
