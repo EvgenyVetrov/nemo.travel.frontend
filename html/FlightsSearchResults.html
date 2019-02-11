@@ -117,7 +117,7 @@
 
 
 				<!-- bizontrip -->
-				<div class="nemo-ui-button" data-bind="
+				<div class="nemo-ui-button save-offline-button" data-bind="
 					text: $root.i18n('FlightsSearchResults', 'save_offline'),
 					click: function () { set_offline('/trip/setoffline/?serviceId=' + nemoBaseUrl.replace('/flight/search/', '')) }"></div>
 				<!-- /end bizontrip -->
@@ -393,7 +393,22 @@
 			<div class="nemo-flights-results__content__results__controls" data-bind="css:{'nemo-flights-results__content__results__controls_resultLoadingDummy': !resultsLoaded()}">
 				<div class="nemo-flights-results__content__results__controls__item nemo-flights-results__content__results__controls__item_count"
 					data-bind="
-						text: $root.i18n('FlightsSearchResults', 'controls__count_' + (visibleResultsCount() == totalResultsCount ? 'all' : 'filtered'))
+
+
+
+
+
+
+
+						text: ((window.primitiveSearch && visibleResultsCount() == totalResultsCount) ? window.allTicketsCounterText : $root.i18n('FlightsSearchResults', 'controls__count_' + (visibleResultsCount() == totalResultsCount ? 'all' : 'filtered')))
+
+
+
+
+
+
+
+
 							.replace('[%-count-%]', visibleResultsCount() || 300)
 							.replace('[%-total-%]', totalResultsCount || 300)"></div>
 				<div class="nemo-flights-results__content__results__controls__item nemo-flights-results__content__results__controls__item_sorting">
@@ -837,15 +852,36 @@
 					<div class="nemo-flights-results__flightsGroup__footer__buyButtonContainer__disclaimer" data-bind="html: $root.i18n('FlightsSearchResults','flightsGroup__footer__passengersDisclaimer')"></div>
 				<!-- /ko -->
 
-				<div class="nemo-ui-button nemo-ui-button_main nemo-flights-results__flightsGroup__buyButton"
+
+
+
+
+
+                <!-- bizontrip -->
+                <!-- ko if: window.primitiveSearch -->
+                <div class="price-as-text">
+                    <money format="0,0 $" data-bind="money: getTotalPrice()" class="nemo-flights-results__flightsGroup__buyButton__text"></money>
+                    <span class="nemo-flights-results__flightsGroup__buyButton__checkText" data-bind="text: $root.i18n('FlightsSearchResults','flightsGroup__buyButton__checking')"></span>
+                </div>
+                <!-- /ko -->
+                <!-- end bizontrip -->
+
+
+
+
+
+
+                <div class="nemo-ui-button nemo-ui-button_main nemo-flights-results__flightsGroup__buyButton"
 					data-bind="
 						css: {
 
 
 
 
+
+							'hidden': window.primitiveSearch,
 							'nemo-ui-button_disabled': (selectedFlightsIds().length == 0) || selectedFlight().tpReject,
-                                                        'nemo-flights-results__flightsGroup__buyButton__lowestPrice': selectedFlight().isOptimalFlight,
+							'nemo-flights-results__flightsGroup__buyButton__lowestPrice': selectedFlight().isOptimalFlight,
 							'nemo-flights-results__flightsGroup__buyButton_warning': selectedFlightsIds().length > 0 && selectedFlight().warnings.length
 
 
@@ -893,7 +929,7 @@
             <!-- /ko -->
             <div class="clearfix"></div>
 
-            <!-- ko if: selectedFlight().TPwarnings.length -->
+            <!-- ko if: selectedFlight().TPwarnings.length && !window.primitiveSearch -->
             <div class="pb-10 pt-4"><span class="status-mark bg-orange"></span>
                 <span class="dot nemo-flights-results__flightsGroup__footer__TP_header"
                       data-bind="html: $root.i18n('FlightsSearchResults','TP__accept_false_short')"></span></div>
@@ -1116,6 +1152,22 @@
 						data-bind="text: $root.i18n('FlightsSearchResults', 'flightsCompareTable__noCombinableFlight')">
 				</div>
 			<!-- /ko -->
+
+
+
+
+            <!-- bizontrip -->
+            <!-- ko if: window.primitiveSearch -->
+            <div class="price-as-text" style="display: inline-block">
+                <money format="0,0 $" data-bind="money: getTotalPrice()" class="nemo-flights-results__flightsGroup__buyButton__text"></money>
+                <span class="nemo-flights-results__flightsGroup__buyButton__checkText" data-bind="text: $root.i18n('FlightsSearchResults','flightsGroup__buyButton__checking')"></span>
+            </div>
+            <!-- /ko -->
+            <!-- end bizontrip -->
+
+
+
+
 			<div data-bind="
 					css: {
 
@@ -1123,6 +1175,7 @@
 
 
 
+						'hidden': window.primitiveSearch,
 					    'nemo-ui-button_disabled': selectedFlightsIds().length == 0 || selectedFlight().tpReject,
 						'nemo-flights-results__flightsGroup__buyButton__lowestPrice': selectedFlight().isOptimalFlight,
 
@@ -1206,7 +1259,7 @@
             <!-- /ko -->
             <div class="clearfix"></div>
 
-            <!-- ko if: selectedFlight().TPwarnings.length -->
+            <!-- ko if: selectedFlight().TPwarnings.length && !window.primitiveSearch -->
             <div class="text-left ltr">
                 <div class="pb-10 pt-4">
                     <span class="status-mark bg-orange"></span>
@@ -2133,7 +2186,17 @@
 					},
 					visible: $index() < $parents[1].shownFlights()
 				">
-				<!-- ko if: disabled() -->
+
+
+
+
+                <!-- bizontrip -->
+				<!-- ko if: disabled() || window.primitiveSearch -->
+                <!-- end bizontrip -->
+
+
+
+
 					<div class="nemo-flights-results__couplingTable__groups__buyGroup__item__price">
 						<!-- ko if: otherPrices -->
 							<!-- ko text: $root.i18n('FlightsSearchResults', 'couplingTable__infoColumn__priceFrom') --><!-- /ko -->
@@ -2149,7 +2212,17 @@
 							text: $root.i18n('FlightsSearchResults', 'couplingTable__infoColumn__select')
 						"></span>
 				<!-- /ko -->
-				<!-- ko if: !disabled() -->
+
+
+
+
+                <!-- bizontrip -->
+				<!-- ko if: !disabled() && !window.primitiveSearch-->
+                <!-- end bizontrip -->
+
+
+
+
 					<div class="nemo-ui-button nemo-ui-button_main nemo-flights-results__couplingTable__buyButton" data-bind="
 						css: {
 							'nemo-flights-results__couplingTable__buyButton_inactive': $data != $parent.selected(),
@@ -2264,7 +2337,19 @@
 				<div class="nemo-flights-results__compareTable__groupsItem__fullInfo">
 					<a class="nemo-ui-pseudoLink nemo-flights-results__compareTable__groupsItem__linkToFullTicket"
 					   data-bind="attr{'data-GroupId':$data.id},
-												   text:$root.i18n('FlightsSearchResults', 'flightsCompareTable__goToTicket'),
+
+
+
+
+
+
+												   text: window.primitiveSearch ? window.moreInfoText : $root.i18n('FlightsSearchResults', 'flightsCompareTable__goToTicket'),
+
+
+
+
+
+
 												   flightsResultsCompareTableGoToTicket:null"></a>
 					<div class="nemo-flights-results__compareTable__groupsItem__flightSelectWrap"
 					     data-bind="foreach: legGroupings">
@@ -2336,7 +2421,16 @@
 						</div>
 					</div>
 					<div class="nemo-flights-results__compareTable__groupsItem__buttonWrap">
-						<!-- ko if: selectedFlightsIds().length -->
+
+
+
+
+						<!-- // bizon && !window.primitiveSearch -->
+						<!-- ko if: selectedFlightsIds().length && !window.primitiveSearch  -->
+
+
+
+
 						<button class="nemo-ui-button nemo-flights-results__compareTable__groupsItem__buyButton"
 						        data-bind="
 							        css: {

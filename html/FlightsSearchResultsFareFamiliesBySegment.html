@@ -5,7 +5,17 @@
 		dialogClass: 'nemo-flights-results__fareFamiliesBySegment__popup',
 		title: $root.i18n('FlightsSearchResults', 'flightsGroup__fareFamilies__bySegments__title__desc')
 	},
-	text: $root.i18n('FlightsSearchResults', 'flightsGroup__fareFamilies__title__chooseTariff')
+
+
+
+
+
+	text: window.primitiveSearch ? window.avilableTariffsTxt : $root.i18n('FlightsSearchResults', 'flightsGroup__fareFamilies__title__chooseTariff')
+
+
+
+
+
 "></a>
 
 <div class="js-nemoApp__popupBlock nemo-flights-results__fareFamilies__popup__wrapper nemo-flights-results__fareFamiliesBySegment__popup__wrapper" style="display: none"

@@ -407,7 +407,14 @@ define(
 				$target.popup({
 					buttons: [
 						{
-							text: this.$$controller.i18n('FlightsSearchForm','flightsScheduleForm-tickets'),
+
+
+							/* bizontrip */
+							text: window.primitiveSearch ? window.checkSeatsAvailabilityTxt : this.$$controller.i18n('FlightsSearchForm','flightsScheduleForm-tickets'),
+							/* end bizontrip */
+
+
+
 							click: function () {
 								if (!self.passengersError()) {
 									$target.popup('close');

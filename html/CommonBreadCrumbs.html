@@ -5,7 +5,15 @@
 				<!-- ko if: active -->
 					<a href="#" class="nemo-ui-pseudoLink nemo-common-breadCrumbs__crumbs__crumb__title"
 					   data-bind="
-							text: $data.i18n ? $data.i18n : $root.i18n('CommonBreadCrumbs', title),
+
+
+
+
+							text: window.primitiveSearch ? window.checkSeatsAvailabilityTxt : $data.i18n ? $data.i18n : $root.i18n('CommonBreadCrumbs', title),
+
+
+
+
 							attr: { href: link },
 							click: function (model, e) { 
 								e.preventDefault(); 
@@ -46,6 +54,7 @@
 	</div>
 </section>
 <!-- // bizontrip start -->
+<!-- ko if: !window.primitiveSearch -->
 <div class="mb-5">
     <span class="mr-5" data-bind="
         text: $('#fsw-additional-data').data('save_offline_description_text')">
@@ -54,4 +63,8 @@
         title: $root.i18n('FlightsSearchResults', 'save_offline'),
         click: function () { set_offline('/trip/setoffline/?serviceId=' + nemoBaseUrl.replace('/flight/search/', '')) };"></span>
 </div>
+<!-- /ko -->
+
+<!--  ko if: window.primitiveSearch && changeSubBreadcrumbsHack() -->
+<!-- /ko -->
 <!-- // bizontrip end -->
