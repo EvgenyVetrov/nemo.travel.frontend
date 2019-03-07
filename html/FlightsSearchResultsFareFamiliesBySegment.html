@@ -3,7 +3,18 @@
 		beforeOpen: load.bind($data),
 		parentClass: 'js-flights-results__fareFamilies',
 		dialogClass: 'nemo-flights-results__fareFamiliesBySegment__popup',
-		title: $root.i18n('FlightsSearchResults', 'flightsGroup__fareFamilies__bySegments__title__desc')
+
+
+
+
+
+
+		title: window.primitiveSearch ? window.avilableTariffsTxt : $root.i18n('FlightsSearchResults', 'flightsGroup__fareFamilies__bySegments__title__desc')
+
+
+
+
+
 	},
 
 

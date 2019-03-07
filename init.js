@@ -61,7 +61,7 @@ require(
                 staticInfoURL: nemoStaticUrl,
                 version: 'v1.38.2.1455722074',
                 hostId: document.location.host,
-                root: nemoBaseUrl,
+                root: window.primitiveSearch ? '/flight/search' : nemoBaseUrl,
                 postParameters: {},
                 i18nLanguage: appLanguageId,
                 componentsAdditionalInfo: {
@@ -69,6 +69,8 @@ require(
                 }
             },
             controller;
+
+        console.warn(JSON.stringify(options));
 
         // Before booking flight, replace original Nemo flight ids with Nemo 2 ids.
         AppController.prototype.extend(

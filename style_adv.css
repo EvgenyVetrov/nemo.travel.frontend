@@ -237,6 +237,21 @@ padding: 0 !important;
     box-shadow: 0 0 8px #b3b3b3 !important;
 }
 
+.price-as-text {
+    color: #353b42;
+    font-size: 16px;
+    line-height: 41px;
+    font-weight: 600;
+    text-align: right;
+    background: white;
+    box-shadow: none;
+}
+
+.price-as-text:hover {
+    background: white;
+    box-shadow: none;
+}
+
 @media (max-width: 470px){
     .optimal_variants_list {
         margin-top: 10px !important;
@@ -362,4 +377,17 @@ padding: 0 !important;
 
 .nemo-flights-form__additional__item {
     display: none !important;
+}
+
+.primitive-search .nemo-flights-form__additional__item {
+    display: inherit !important;
+}
+
+.flight-search-search-only .nemo-flights-results__couplingTable__buyButton__text {
+    opacity: 0;
+    line-height: 3px;
+}
+
+.flight-search-search-only .save-offline-button {
+    display: none;
 }

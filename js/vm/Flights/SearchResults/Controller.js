@@ -617,6 +617,15 @@ define(
 						this.$$rawdata.flights.search.results.flightGroups.length == 1 &&
 						this.$$rawdata.flights.search.results.flightGroups[0].flights.length == 1 &&
 						this.searchInfo().flightNumbers.length > 0
+
+
+
+                        // bizontrip =>
+                        && !window.primitiveSearch
+                        // <= end bizontrip
+
+
+
 					) {
 						this.bookFlight([this.$$rawdata.flights.search.results.flightGroups[0].flights[0].id]);
 						displayResults = false;
