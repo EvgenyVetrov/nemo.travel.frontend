@@ -1540,24 +1540,27 @@
 				<!-- /ko -->
 			<!-- /ko -->
 		</div>
-		<img data-bind="attr: {src: $root.controller.options.staticInfoURL + $parent.flights[0].segmentsByLeg[$index()][0].marketingCompany.logo.image},
-					tooltip: {
-						header: $parent.flights[0].carriersMismatchDataByLeg[$index()].isCarriersMismatch ? $root.i18n('FlightsSearchResults','flightsGroup__header__carrierMismatch__header') : '',
-						content: $parent.flights[0].carriersMismatchDataByLeg[$index()].isCarriersMismatch ? $root.i18n('FlightsSearchResults','flightsGroup__header__carrierMismatch__content')
-							.replace('[%-marketingCarrier-%]', $parent.flights[0].segmentsByLeg[$index()][0].marketingCompany.name)
-							.replace(
-								'[%-operatingCarriers-%]',
-								$root.helpers.smartJoin(
-									$parent.flights[0].carriersMismatchDataByLeg[$index()].airlineNames,
-									', ',
-									$root.i18n('FlightsSearchResults','flightsGroup__header__carrierMismatch__carriersLastJoin')
-								)
-							)
-							:
-							$parent.flights[0].segmentsByLeg[$index()][0].marketingCompany.name,
-					cssClass: 'nemo-flights-results__flightsListGroup__segment__carrier__tooltip'
-				}"
-			 class="nemo-flights-results__flightsListGroup__segment__carrier__logo nemo-flights-results__flightsListGroup__full__segment__carrier__logo">
+
+		<div>
+			<img data-bind="attr: {src: $root.controller.options.staticInfoURL + $parent.flights[0].segmentsByLeg[$index()][0].marketingCompany.logo.image},
+						tooltip: {
+							content: $parent.flights[0].segmentsByLeg[$index()][0].marketingCompany.name,
+							cssClass: 'nemo-flights-results__flightsListGroup__segment__carrier__tooltip'
+						}"
+				 class="nemo-flights-results__flightsListGroup__segment__carrier__logo nemo-flights-results__flightsListGroup__full__segment__carrier__logo">
+
+			<!-- ko if: $parent.flights[0].carriersMismatchArrayByLeg[$index()].length -->
+				<!-- ko foreach: $parent.flights[0].carriersMismatchArrayByLeg[$index()] -->
+					<img data-bind="
+						attr: { src: $root.controller.options.staticInfoURL + $data.logo.image },
+						tooltip: {
+							content: $data.name,
+							cssClass: 'nemo-flights-results__flightsListGroup__segment__carrier__tooltip'
+						}"
+						 class="nemo-flights-results__flightsListGroup__segment__carrier__logo nemo-flights-results__flightsListGroup__segment__carrier__logo_mismatch nemo-flights-results__flightsListGroup__full__segment__carrier__logo">
+				<!-- /ko -->
+			<!-- /ko -->
+		</div>
 	</div>
 	<div class="nemo-flights-results__flightsGroup__leg__info"
 		 data-bind="

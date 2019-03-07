@@ -533,6 +533,35 @@
 		<div class="nemo-ui-slider" data-bind="flightsResultsPFNumberSlider: value"></div>
 	</div>
 </div></script>
+	<script id="nemo-koTemplate-FlightsResults-PostFilters-Text" type="text/html"><div class="nemo-common-postFilters__filterList__filter__valuesBlock__values__value nemo-common-postFilters__filterList__filter__valuesBlock__values__value_noMatter nemo-common-postFilters-text"
+		data-bind="css: { 'nemo-common-postFilters-text_closed': !isOpen() }">
+	<!-- ko if: isOpen -->
+		<div class="nemo-common-postFilters-text__inputWrapper">
+			<input class="nemo-common-postFilters-text__input" autofocus
+				   data-bind="
+						attr: {
+							placeholder: $root.i18n('FlightsSearchResults', 'PF__name_' + config.name + '_placeholder'),
+							class: 'nemo-common-postFilters-text__input js-postFilters-text__' + config.name
+						},
+						value: value,
+						event: {
+							blur: inputBlur
+						}
+					"/>
+
+			<div class="nemo-common-postFilters-text__close" data-bind="click: toggle">
+				<i class="fa fa-close"></i>
+			</div>
+		</div>
+	<!-- /ko -->
+
+
+	<div class="nemo-common-postFilters-text__overlay" data-bind="visible: !isOpen(), click: setFocus" >
+		<i class="fa fa-search"></i>
+		<span data-bind="text: $root.i18n('FlightsSearchResults', 'PF__name_' + config.name)"></span>
+	</div>
+
+</div></script>
 
 		<script id="nemo-koTemplate-FlightsResults-Group_tile" type="text/html"><div data-bind="attr: {
 				'class': 'nemo-ui-subContainer nemo-flights-results__flightsGroup js-flights-results__group ' +

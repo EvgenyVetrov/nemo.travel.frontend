@@ -455,19 +455,10 @@
 			<!--/ko -->
 
 			<!--ko if: resultsLoaded() -->
-				<!-- ko if: slicedShowCaseHotels && slicedShowCaseHotels().length > 0 -->
+				<!-- ko if: showCaseHotels && showCaseHotels().length > 0 -->
 					<div class="nemo-hotels-results__showcase nemo-hotels-results__showcase_corporateRates">
-						<div class="nemo-hotels-results__showcase__header">
-							<div class="nemo-hotels-results__showcase__headerText"
-								data-bind="text: $root.i18n('HotelsSearchResults', 'hotels__showcase__corporate__header')"></div>
-						</div>
-
-						<div class="nemo-hotels-results__showcase__hotels" data-bind="foreach: slicedShowCaseHotels">
+						<div class="nemo-hotels-results__showcase__hotels" data-bind="foreach: showCaseHotels">
 							<!-- ko template: { name: 'hotelsResultsHotel' } --><!-- /ko -->
-						</div>
-
-						<div class="nemo-hotels-results__showMoreWrap">
-							<div class="nemo-ul-showMoreBtn" data-bind="click: showCaseNextHotels, visible: !hideShowCaseMoreButton(), text: $root.i18n('HotelsSearchResults', 'hotels__showcase__showMore')"></div>
 						</div>
 					</div>
 				<!-- /ko -->
@@ -529,7 +520,11 @@
 <!--/ko -->
 
 <script type="text/html" id="hotelsResultsHotel">
-	<div class="nemo-hotels-results__groupList__item" data-bind="css: { 'has-flag': $data.hotelPrice == $parent.minHotelPrice, 'has-flag-specialOffer': $data.isSpecialOffer}">
+	<div class="nemo-hotels-results__groupList__item" data-bind="
+		css: {
+			'has-flag': $data.hotelPrice == $parent.minHotelPrice && !$parent.isOneHotelWithCorporateFareExists(),
+			'has-flag-specialOffer': $data.isSpecialOffer && !$parent.isOneHotelWithCorporateFareExists()
+		}">
 		<div class="nemo-ui-subContainer
 										nemo-hotels-results__hotelsGroup">
 			<div class="nemo-ui-subContainer__header
@@ -546,12 +541,13 @@
 					</div>
 
 				</div>
-				<!-- ko if: !isCorporateRates -->
-				<div class="nemo-hotels-results__hotelsGroup__header__additional" data-bind="text: $root.i18n('HotelsSearchResults', 'header-flag__special-offer'), visible: $data.isSpecialOffer"></div>
-				<div class="nemo-hotels-results__hotelsGroup__header__additional" data-bind="text: $root.i18n('HotelsSearchResults', 'header-flag__best_price'), visible: $data.hotelPrice == $parent.minHotelPrice && !$data.isSpecialOffer"></div>
+
+				<!-- ko if: !isCorporateRates && !$parent.isOneHotelWithCorporateFareExists() -->
+					<div class="nemo-hotels-results__hotelsGroup__header__additional" data-bind="text: $root.i18n('HotelsSearchResults', 'header-flag__special-offer'), visible: $data.isSpecialOffer"></div>
+					<div class="nemo-hotels-results__hotelsGroup__header__additional" data-bind="text: $root.i18n('HotelsSearchResults', 'header-flag__best_price'), visible: $data.hotelPrice == $parent.minHotelPrice && !$data.isSpecialOffer"></div>
 				<!-- /ko -->
 				<!-- ko if: isCorporateRates -->
-				<div class="nemo-hotels-results__hotelsGroup__header__additional" data-bind="text: $root.i18n('HotelsSearchResults', 'header-flag__corporate-rates'), visible: $data.isCorporateRates"></div>
+					<div class="nemo-hotels-results__hotelsGroup__header__additional" data-bind="text: $root.i18n('HotelsSearchResults', 'header-flag__corporate-rates'), visible: $data.isCorporateRates"></div>
 				<!-- /ko -->
 			</div>
 
@@ -561,7 +557,7 @@
 						 data-bind="click: $parent.showCardHotel, style: { 'backgroundImage': $parent.getHotelMainImage($data, 1) }">
 					</div>
 
-					<!-- ko if:  staticDataInfo.averageCustomerRating -->
+					<!-- ko if:  staticDataInfo.averageCustomerRating && staticDataInfo.averageCustomerRating.value > 0 -->
 					<div class="nemo-hotels-results__hotelsGroup__mainInfo__rating">
 						<span class="nemo-hotels-results__hotelsGroup__mainInfo__rating__number" data-bind="text: staticDataInfo.averageCustomerRating ? staticDataInfo.averageCustomerRating.value : 0"></span>
 						<span class="nemo-hotels-results__hotelsGroup__mainInfo__rating__text" data-bind="text: staticDataInfo.averageCustomerRating && staticDataInfo.averageCustomerRating.description ? staticDataInfo.averageCustomerRating.description : $root.i18n('HotelsSearchResults', 'PH__averageCustomerRating_description_default')"></span>
@@ -572,7 +568,7 @@
 						<div class="nemo-hotels-results__hotelsGroup__mainInfo__infoWrap">
 							<div class="nemo-hotels-results__hotelsGroup__mainInfo__addressWrap" data-bind="css: {'nemo-hotels-results__hotelsGroup__mainInfo__addressWrap__alone' : !staticDataInfo.averageCustomerRating}">
 								<div class="nemo-hotels-results__hotelsGroup__mainInfo__addressWrap__address"
-									 data-bind="text: $parent.currentCity().name + ', ' + staticDataInfo.addresses[0]">
+									 data-bind="text: $parent.currentCity().name + (staticDataInfo.addresses && staticDataInfo.addresses.length ? ', ' + staticDataInfo.addresses[0] : '')">
 								</div>
 								<div class="nemo-hotels-results__hotelsGroup__mainInfo__distances">
 														<span class="nemo-hotels-results__hotelsGroup__mainInfo__distance">
