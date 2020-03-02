@@ -245,6 +245,7 @@ padding: 0 !important;
     text-align: right;
     background: white;
     box-shadow: none;
+    direction: ltr;
 }
 
 .price-as-text:hover {
@@ -292,7 +293,7 @@ padding: 0 !important;
 @media (max-width:640px) {
     .nemo-flights-results.js-nemoApp__component{
         background-color: #63636c !important;
-        margin: 0 -10px !important;
+        margin: 0 -20px !important;
     }
     .nemo-flights-results__content{
         padding:0 !important;
@@ -390,4 +391,12 @@ padding: 0 !important;
 
 .flight-search-search-only .save-offline-button {
     display: none;
+}
+
+.nemo-flights-results__couplingTable__groups__group__item__route {
+    display: initial;
+}
+
+.nemo-flights-results__couplingTable__groups_2 ._bizon_flightnumber_block {
+    display: none !important;
 }

@@ -408,17 +408,26 @@ define(
 							return;
 						}
 
-						if (data.system.error && data.system.error.message) {
+						if (data.system && data.system.error && data.system.error.message) {
 							self.bookingCheckInProgress(false);
 							self.resultsLoaded(true);
 							self.bookingCheckError(data.system.error.message);
 						}
-						else if (self.options.needCheckAvail && !data.flights.search.flightInfo.isAvail) {
+						else if (self.options.needCheckAvail && data.flights && !data.flights.search.flightInfo.isAvail) {
 							self.bookingCheckInProgress(false);
 							self.resultsLoaded(true);
 							self.bookingCheckError(self.$$controller.i18n('FlightsSearchResults', 'bookingCheck__error__error_unavailable'));
-						}
-						else {
+						} else if (data.status ==  'variant-added') {
+                            self.bookingCheckInProgress(false);
+                            self.resultsLoaded(true);
+                            new PNotify({
+                                text: data.text,
+                                text_escape: false,
+                                icon: null,
+                                type: 'success',
+                                delay: 2500
+                            });
+                        } else {
 							var url;
 
 							// FIXME

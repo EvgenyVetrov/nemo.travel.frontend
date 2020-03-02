@@ -187,6 +187,7 @@ define(
 
 								// Converting autocomplete data into an array of possibilities
 								data.guide.autocomplete.iata.map(function (autocompleteItem) {
+
 									// Root airport model.
 									var airportModel = viewModel.$$controller.getModel('Flights/Common/Geo', {
 										data: autocompleteItem,
@@ -275,7 +276,15 @@ define(
 								}, 100);
 							}
 						}
-						else if (forceAggregationAirports) {
+
+
+
+
+						else if (forceAggregationAirports  && ui.item.IATA != 'ULV') { // bizontrip upgrade
+
+
+
+
 							var replacement = null;
 
 							// Force replacement of the selected airport.

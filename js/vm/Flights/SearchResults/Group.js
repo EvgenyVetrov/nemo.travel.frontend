@@ -439,6 +439,14 @@ define(
 
 		/* bizontrip */
         Group.prototype.isOptimalFlight = function () {
+        	if (window.isDev) {
+                for (var len = 0; len < this.flights.length; len++) {
+                    if (this.flights[len].isOptimalFlight) {
+                        return this.flights[len].isOptimalFlight;
+                    }
+                }
+			}
+
             return this.flights[0].isOptimalFlight;
         };
         Group.prototype.hasTPwarnings = function () {

@@ -239,6 +239,11 @@ require(
 );
 
 function set_offline(url) {
+    if (window.tripType == 1) {
+        disableOfflineForPrivateTrip();
+        return;
+    }
+
     var yes = SetOffline.yes;//"Save offline order"
     var no = SetOffline.no; //"Return to online search"
     var offline_comment = SetOffline.comment; //"Return to online search"

@@ -374,20 +374,24 @@ define(
 								}
 							}
 							else {
+                                window.isSuccesSearchScheduleResult = false; // bizontrip
 								searchError('emptyResult');
 							}
 						}
 						else {
+                            window.isSuccesSearchScheduleResult = false; // bizontrip
 							searchError('systemError', results.system.error);
 						}
 					}
 					catch (e) {
+                        window.isSuccesSearchScheduleResult = false; // bizontrip
 						searchError('brokenJSON', data);
 					}
 
 					self.scheduleLoading(false);
 				},
 				function () {
+                    window.isSuccesSearchScheduleResult = false; // bizontrip
 					searchError('requestFailed', [request.status, request.statusText]);
 				}
 			);

@@ -638,14 +638,35 @@ define (
 				if (request.readyState === 4) {
 					if (request.status >= 200 && request.status < 400) {
 						self.processServerData(request.responseText);
+
+                        // bizontrip start
+                        if (window.enableFlightScheduleEmail) {
+                            window.isSuccesSearchScheduleResult = true;
+                            console.warn(POSTParams);
+                        }
+                        // bizontrip end
+
 						callback(request.responseText, request);
 					} else {
+                        // bizontrip start
+                        if (window.enableFlightScheduleEmail) {
+                            window.isSuccesSearchScheduleResult = false;
+                            console.error(POSTParams);
+                        }
+                        // bizontrip end
+
 						errorCallback(request);
 					}
 				}
 			};
 
 			request.send(POSTParams);
+
+            // bizontrip start
+            if (window.enableFlightScheduleEmail) {
+                window.lastSearchScheduleRequest = POSTParams;
+            }
+            // bizontrip end
 
 			return request;
 		};
