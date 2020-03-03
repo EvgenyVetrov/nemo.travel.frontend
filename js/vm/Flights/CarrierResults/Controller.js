@@ -16,6 +16,7 @@ define(
 
 			this.shiftedDateDepartSelected = ko.observable(false);
 			this.shiftedDateReturnSelected = ko.observable(false);
+			this.isTotalPriceAndFarePricesNotMatch = ko.observable(false);
 			
 			this.carrierPossibleSorts = ['depTime', 'arrTime', 'durationOnLeg', 'price', 'transfersDurationOnLeg'];
 			this.sortByLeg = ko.observable([]);
@@ -24,21 +25,27 @@ define(
 
 			this.realFlightSelected = ko.computed(function () {
 				var legs = this.routeLegs(),
-					ret = [];
+					ret = [],
+					sumCellPrice = 0;
 
 				for (var i = 0; i < legs.length; i++) {
 					if (legs[i].selectedPrice()) {
 						ret.push(legs[i].selectedPrice().realFlightsIds);
+						sumCellPrice += legs[i].selectedPrice().totalPrice.amount();
 					}
 				}
 
 				ret = helpers.intersectArrays.apply(helpers, ret);
 
 				ret = ret.length ? this.flights[ret[0]] : null;
+				
+				if (ret) {
+					this.isTotalPriceAndFarePricesNotMatch(ret.price.flightPrice.amount() - sumCellPrice > 0.01);
+				}
 
 				return ret;
 			}, this);
-
+			
 			// Listening error
 			this.error.subscribe(function (newValue) {
 				if (newValue == 404) {
@@ -469,7 +476,7 @@ define(
 									var result = true;
 									var airlineCode = flight.segments[0].marketingCompany.IATA;
 									var hideEmptyGroups = groups.length > 5 && airlineCode !== 'R3';
-									var hideR3PromoGroup = (group.name === 'Промо' || group.name === 'Promo') && airlineCode === 'R3';
+									var hideR3PromoGroup = (airlineCode === 'R3' && group.name && (group.name.indexOf('Промо') === 0 || group.name.indexOf('Promo') === 0));
 
 									// Для а\к R3 скрываем колонку с тарифом "Промо", если на плече на этом тарифе нет мест.
 									// Также, если на плече больше 5 тарифов, то прячем те, на которых нет мест.
@@ -617,7 +624,7 @@ define(
 			}
 			this.directOnlyFilterEnableByLeg(this.directOnlyFilterEnableByLeg());
 			this.filteredDirectOnlyByLeg(this.filteredDirectOnlyByLeg());
-
+			
 			this.resultsLoaded(true);
 		};
 		
@@ -702,7 +709,7 @@ define(
 			}
 			return false;
 		};
-
+		
 		return FlightsCarrierResultsController;
 	}
 );

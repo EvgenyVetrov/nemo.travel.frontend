@@ -67,6 +67,7 @@ define(
 			this.countOfNights = ko.observable(0);
 			this.isListView = ko.observable(true);
 			this.oldMarkers = ko.observable([]);
+			this.markerClusterer = ko.observable();
 			this.searchInfo = ko.observable({});
 			this.resultsLoaded = ko.observable(false);
 			this.showCaseVisibleItems = ko.observable(4);
@@ -243,8 +244,11 @@ define(
 						})
 						.then(function (isSuccess) {
 							if (isSuccess === true) {
-								if (hotel.id in self.hotelsPool) {
-									hotel = _.cloneDeep(self.hotelsPool[hotel.id]);
+								for (var id in self.hotelsPool) {
+									if(self.hotelsPool[id].id === hotel.id){
+										hotel = _.cloneDeep(self.hotelsPool[id]);
+										break;
+									}
 								}
 	
 								self.$$controller.navigate('/hotels/results/' + getSearchId() + '/' + hotel.hotelIdFromSearch, false, hotel.name);
@@ -296,7 +300,7 @@ define(
 		// Extending from dictionaryModel
 		helpers.extendModel(HotelsSearchResultsController, [BaseControllerModel, HotelSearchResultsModel]);
 
-		HotelsSearchResultsController.prototype.bookHotel = function (url, rooms) {
+		HotelsSearchResultsController.prototype.bookHotel = function (url, rooms, lateCheckOut, earlyCheckIn) {
 			this.bookingCheckInProgress(true);
 			this.bookingCheckError(null);
 
@@ -320,6 +324,14 @@ define(
 				url += '?';
 			}
 			url += 'roomIds=' + roomsInfo.join(',') + '&fromApi=true';
+
+			if (lateCheckOut) {
+				url += '&checkOut=' + lateCheckOut;
+			}
+
+			if (earlyCheckIn) {
+				url += '&checkIn=' + earlyCheckIn;
+			}
 
 			function processError(error) {
 				error = error || '';

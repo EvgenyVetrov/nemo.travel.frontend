@@ -806,7 +806,7 @@ define(
 				this.highlightDates &&
 				departure.IATA !== arrival.IATA
 			) {
-				var requestURL = this.$$controller.options.dataURL + '/flights/availability/schedule/' + departure.IATA + '/' + arrival.IATA;
+				var requestURL = this.$$controller.options.dataURL + '/flights/availability/schedule/' + departure.IATA + '/' + arrival.IATA + '/withTransfers';
 
 				fetch(requestURL, { credentials: 'same-origin' } )
 					.then(function(response) { return response.json(); })
@@ -943,7 +943,7 @@ define(
 			if (!this.isValid()) {
 				this.validaTERROR(true);
 				this.processValidation();
-				Analytics.tap('searchForm.search.validationError');
+				Analytics.tap('searchForm.validationError');
 			}
 			else if (this.delayedSearch && this.$$controller.navigateGetPushStateSupport()) {
 				Analytics.tap('searchForm.search');
@@ -1056,6 +1056,12 @@ define(
 			}
 
 			this.isSearching(false);
+			
+			if (message == 'emptyResult') {
+				Analytics.tap('searchResults.noFlights');
+			}
+			
+			Analytics.tap('searchResults.resultsError');
 		};
 
 		FlightsSearchFormController.prototype.abortSearch = function () {

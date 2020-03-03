@@ -5,14 +5,16 @@ define([
     'js/vm/Models/HotelsBaseModel',
     'js/vm/Models/RecentHotelsModel',
     'js/vm/Common/Cache/Cache',
-	'js/lib/md5/md5'
+	'js/lib/md5/md5',
+	'js/lib/markerclusterer/markerclusterer'
 ], function (ko,
 			 helpers,
 			 dotdotdot,
 			 HotelsBaseModel,
 			 RecentHotelsModel,
 			 Cache,
-			 md5) {
+			 md5,
+			 MarkerClusterer) {
 
     function GoogleMapModel() {
 
@@ -37,6 +39,17 @@ define([
             streetViewControl: !disableZoomAndStreetViewControl
         });
     }
+	
+	function setHotelZoomByLatLng(lat, lng, map) {
+		var maxZoomService = new google.maps.MaxZoomService();
+		maxZoomService.getMaxZoomAtLatLng({lat: lat, lng: lng}, function(response) {
+			if (response.status !== google.maps.MaxZoomStatus.OK) {
+				console.log('Error in MaxZoomService');
+			} else {
+				map.setZoom(response.zoom - 3);
+			}
+		});
+    }
 
 	GoogleMapModel.prototype.getMarkerIcon = function (iconType) {
 		var baseUrl = this.$$controller.options.controllerSourceURL;
@@ -56,7 +69,7 @@ define([
      * @param {String} options.iconColor
      */
     GoogleMapModel.prototype.makeMarker = function (map, options) {
-
+		
 		if (!window.google) {
 			console.warn("Google Maps Library is not included to page. Check API key");
 			return;
@@ -72,7 +85,6 @@ define([
                     hotel.staticDataInfo.posLatitude,
                     hotel.staticDataInfo.posLongitude
                 ),
-                map: map,
                 icon: this.getMarkerIcon(iconType),
                 optimized: false,
                 content: Cache.storage().get(md5('/html/partials/nemo-koTemplate-HotelsResults-MapInfoWindow.html'))
@@ -91,6 +103,9 @@ define([
                 self.infoPopup.open(map, marker);
                 $('#infoWindowContent .description .text').dotdotdot({watch: 'window'});
 				google.maps.event.addListener(self.infoPopup, 'domready', function() {
+					var maxMarkerWidth = $('.nemo-hotels-results__map__wrap').width() - 35;
+					$('#infoWindowContent .hotel').attr('style', 'max-width: ' + maxMarkerWidth + 'px;');
+					
 					// Reference to the DIV which receives the contents of the infowindow using jQuery
 					var iwOuter = $('.gm-style-iw');
 					
@@ -166,12 +181,14 @@ define([
 				lon = hotel.staticDataInfo.posLongitude || 0;
 
 			this.maps[mapId] = makeMap(mapId, [lat, lon], scrollOnWheel, disableZoomAndStreetViewControl);
-
-			this.makeMarker(this.maps[mapId], {
+			
+			marker = this.makeMarker(this.maps[mapId], {
 				hotel: hotel,
 				addClickListener: false,
 				iconColor: GoogleMapModel.ICON_TYPE_DEFAULT
 			});
+			marker.setMap(this.maps[mapId]);
+			setHotelZoomByLatLng(lat, lon, this.maps[mapId]);
 		}
     };
 
@@ -192,7 +209,7 @@ define([
     // map with more then one hotel
     GoogleMapModel.prototype.initMap = function () {
         var self = this,
-            hotels = this.inCircleFilteredHotels ? this.inCircleFilteredHotels() : [],
+            hotels = this.preFilteredAndSortedHotels ? this.preFilteredAndSortedHotels() : [],
             inputSearchBox = document.createElement("input"),
             searchBox;
 
@@ -241,7 +258,7 @@ define([
                     bounds.extend(place.geometry.location);
                 }
             });
-            map.fitBounds(bounds);
+            map.fitBounds(bounds, 0);
         });
         
         // Add circle overlay and bind to center
@@ -257,7 +274,6 @@ define([
 
             self.maps['map'].setCenter(centerLocation);
 
-            self.circle.setCenter(centerLocation);
             self.setHotelsDistancesFromCenter(self.hotels(), centerLocation);
 
             if (self.distanceFromCenter) {
@@ -270,11 +286,16 @@ define([
             setMapCenter(centerLocation);
         }, function () {
 
-            var hotel = hotels[0];
+            for (var i = 0; i < hotels.length; i++) {
+				var hotel = hotels[i],
+					lat = parseFloat(hotel.staticDataInfo.posLatitude),
+					lon = parseFloat(hotel.staticDataInfo.posLongitude);
 
-            if (hotel) {
-                var centerLocation = {lat: hotel.staticDataInfo.posLatitude, lng: hotel.staticDataInfo.posLongitude};
-            }
+				if (!isNaN(lat) && !isNaN(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180) {
+					var centerLocation = {lat: lat, lng: lon};
+					break;
+				}
+			}
 
             setMapCenter(centerLocation);
         });
@@ -283,8 +304,12 @@ define([
         var bounds = this.addMarkersOnMap(hotels);
 
         if (bounds) {
-            this.maps['map'].fitBounds(bounds);
-            this.maps['map'].panToBounds(bounds);
+        	var self = this;
+
+        	setTimeout(function () {
+				self.maps['map'].fitBounds(bounds, 0);
+				self.maps['map'].panToBounds(bounds, 0);
+			}, 1000);
         }
     };
 
@@ -324,14 +349,16 @@ define([
             isBounded = false,
             markers = [];
 
-        this.removeMarkersFromMap(this.oldMarkers());
+		if (this.markerClusterer()) {
+			this.markerClusterer().removeMarkers(this.oldMarkers());
+		}
 
         hotels.forEach(function (hotel) {
 
-            var lat = hotel.staticDataInfo.posLatitude,
-                lon = hotel.staticDataInfo.posLongitude;
+            var lat = parseFloat(hotel.staticDataInfo.posLatitude),
+                lon = parseFloat(hotel.staticDataInfo.posLongitude);
 
-            if (lat && lon) {
+            if (!isNaN(lat) && !isNaN(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180) {
                 var isHotelViewed = RecentHotelsModel.hotelIsViewed(hotel.id),
                     isHotelWithBestPrice = hotel.staticDataInfo.isBestPrice,
                     iconType;
@@ -353,17 +380,22 @@ define([
                     iconColor: iconType
                 }));
 
-                bounds.extend(new google.maps.LatLng(lat, lon));
+             	bounds.extend(new google.maps.LatLng(lat, lon));
 
                 isBounded = true;
             }
         });
 
-        this.oldMarkers(markers);
+		var baseUrl = this.$$controller.options.controllerSourceURL;
+		var markersCluster = new MarkerClusterer(self.maps['map'], markers, { imagePath: baseUrl + '/js/lib/markerclusterer/images/m' });
+		markersCluster.redraw();
+
+		this.oldMarkers(markers);
+        this.markerClusterer(markersCluster);
 
         return isBounded ? bounds : null;
     };
-
+	
     GoogleMapModel.circleParams = {
         fillOpacity: 0,
         strokeColor: '#0D426D',

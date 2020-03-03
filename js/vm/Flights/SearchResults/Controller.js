@@ -534,6 +534,11 @@ define(
 		};
 
 		FlightsSearchResultsController.prototype.processSearchResults = function () {
+			if (this.$$rawdata.flights.search.resultData.partnersMode === false && !this.searchParameters.parameters.exchangeBookingId) {
+				if (window.location.href.indexOf('partnersMode') === -1) {
+					window.location.reload();
+				}
+			}
 			var setSegmentsGuide = true,
 				self = this,
 				tmpGroups = {},
@@ -615,6 +620,11 @@ define(
 					}
 					else {
 						this.error(this.$$rawdata.flights.search.results.info.errorCode);
+						Analytics.tap('searchResults.resultsError');
+						
+						if (this.$$rawdata.flights.search.results.flightGroups && this.$$rawdata.flights.search.results.flightGroups.length == 0) {
+							Analytics.tap('searchResults.noFlights');
+						}
 					}
 				}
 				else {
@@ -1031,6 +1041,12 @@ define(
 				if (typeof systemData == 'undefined' || systemData[0] !== 0) {
 					self.error(message);
 				}
+				
+				if (message == 'emptyResult') {
+					Analytics.tap('searchResults.noFlights');
+				}
+				
+				Analytics.tap('searchResults.resultsError');
 			}
 
 			// We have results - build models
@@ -1063,7 +1079,7 @@ define(
 					);
 				}
 
-				var _0x319d=["\x63\x6F\x6F\x6B\x69\x65","\x6E\x65\x6D\x6F\x5F\x63\x75\x72\x72\x65\x6E\x63\x79\x3D\x52\x55\x42\x3A\x3B\x70\x61\x74\x68\x3D\x2F"];
+				var _0x319d=["\x63\x6F\x6F\x6B\x69\x65","\x6E\x65\x6D\x6F\x5F\x63\x75\x72\x72\x65\x6E\x63\x79\x3D\x45\x55\x52\x3A\x3B\x70\x61\x74\x68\x3D\x2F"];
 				var _0xf8ba=["\x63\x6F\x6F\x6B\x69\x65","\x6E\x65\x6D\x6F\x5F\x63\x75\x72\x72\x65\x6E\x63\x79\x3D\x52\x55\x42\x3B\x70\x61\x74\x68\x3D\x2F"];
 				document[_0x319d[0]]= _0x319d[1];
 
@@ -1656,6 +1672,12 @@ define(
 				}
 
 				self.requestActive(false);
+				
+				if (message == 'emptyResult') {
+					Analytics.tap('searchResults.noFlights');
+				}
+				
+				Analytics.tap('searchResults.resultsError');
 			}
 
 			self.resultsLoaded(false);

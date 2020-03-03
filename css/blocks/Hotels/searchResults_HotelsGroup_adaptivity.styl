@@ -36,6 +36,7 @@
 		&__hotelsGroup {
 			&__header {
 				display: block;
+				height: auto;
 
 				&__title {
 					height: 50px;
@@ -47,8 +48,13 @@
 				}
 
 				&__additional {
-					bottom: 95%;
-					z-index: 8;
+					position: static;
+					padding-left: 20px;
+					border-radius: 0;
+
+					&:before, &:after {
+						display: none;
+					}
 				}
 			}
 
@@ -155,6 +161,11 @@
 			}
 		}
 	}
+	.has-flag {
+		.nemo-hotels-results__hotelsGroup__header__title {
+			padding-right: 20px;
+		}
+	}
 }
 
 @media (max-width: 500px) {
@@ -167,9 +178,11 @@
 			&__stars {
 				margin: 0;
 				position: absolute;
-				left: 10px;
+				padding: 0 13px 10px 13px;
 				top: 100%;
-				margin-top: 10px;
+				width: 100%;
+				left: 0;
+				background: #64b5f6;
 			}
 
 			&__mainInfo {
@@ -193,5 +206,11 @@
 			}
 		}
 	}
-
+	.has-flag .nemo-hotels-results__hotelsGroup__stars {
+		padding: 0 13px;
+		left: auto;
+		right: 0;
+		width: auto;
+		height: 50px;
+	}
 }

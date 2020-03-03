@@ -82,7 +82,7 @@ define(
 				cityId: segment[KEY_CITY_ID],
 				checkInDate: checkInDate.getISODateTime(),
 				checkOutDate: checkOutDate.getISODateTime(),
-				isDelayed: false,
+				isDelayed: true,
 				rooms: rooms,
 				loyaltyCard: {
 					number: localStorageFormData.loyaltyCard ? localStorageFormData.loyaltyCard.cardNumber : null,
@@ -95,7 +95,8 @@ define(
 		};
 
 		HotelSearchResultsModel.prototype.buildModels = function () {
-			var self = this;
+			var self = this,
+				timeout = 1000;
 
 			function searchError(code, systemData) {
 				self.fillSearchForm();
@@ -109,10 +110,9 @@ define(
 				}
 			}
 
-			var onSuccess = function (json) {
+			var onFinish = function (response) {
 				try {
-					var response          = JSON.parse(json),
-						responseErrorCode = null,
+					var responseErrorCode = null,
 						error;
 
 					self.$$rawdata = response;
@@ -150,6 +150,42 @@ define(
 					LocalStorage.set('searchFormData', self.createCookieParamsFromResponse(self.$$rawdata.hotels.search.request));
 					self.processSearchResults();
 
+				}
+				catch (e) {
+					console.error(e);
+				}
+			};
+			
+			var onSuccess = function (json) {
+				try {
+					var response          = JSON.parse(json),
+						responseErrorCode = null,
+						error,
+						resultsId;
+						
+					self.$$rawdata = response;
+					
+					if (!(response.system && response.system.error) &&
+						response.hotels.search.response && 
+						response.hotels.search.response.id
+					) {
+						resultsId = response.hotels.search.response.id;
+						setTimeout(function(){self.$$controller.loadData('/hotels/search/results/' + resultsId, {}, onSuccess)}, timeout);
+						return;
+					}
+					
+					if((response.system && response.system.error) ||
+						!response.hotels.search.results ||
+						response.hotels.search.results.isFinished === undefined || 
+						response.hotels.search.results.isFinished
+					){
+						onFinish(response);
+						return;
+					}
+
+					resultsId = response.hotels.search.results.id;
+					setTimeout(function(){self.$$controller.loadData('/hotels/search/results/' + resultsId, {}, onSuccess)}, timeout);
+					timeout += 1000;
 				}
 				catch (e) {
 					console.error(e);
@@ -207,7 +243,7 @@ define(
 			}
 			return false;
 		};
-
+		
 		/**
 		 * Get distance from center and airport
 		 * @param hotel
@@ -255,15 +291,20 @@ define(
 		};
 
 		function compareObjects(firstArray, secondArray, propertyFirst, propertySecond) {
-			var data = secondArray.slice(0);
-
-			firstArray.forEach(function (firstArrayValue, firstArrayIndex, arrFirst) {
-				secondArray.forEach(function (secondArrayValue, secondArrayIndex) {
-					if (firstArrayValue.id === secondArrayValue[propertyFirst]) {
-						data[secondArrayIndex][propertySecond] = arrFirst[firstArrayIndex];
-					}
-				});
-			});
+			var data = secondArray.slice(0),
+				firstObject = {};
+			
+			for (var i = 0; i < firstArray.length; i++) {
+				firstObject[firstArray[i].id] = firstArray[i];
+			};
+			
+			for (var j = 0; j < secondArray.length; j++) {
+				var property = secondArray[j][propertyFirst];
+				
+				if (property in firstObject) {
+					data[j][propertySecond] = firstObject[property];
+				}
+			};
 
 			return data;
 		}
@@ -323,8 +364,12 @@ define(
 						room.roomCharges.forEach(function (charge) {
 							if (roomsDictionary[charge.roomId]) {
 								var priceCharge = self.$$controller.getModel('Common/Money', charge.price);
-								
-								roomsDictionary[charge.roomId].rate.priceCharge = priceCharge;
+
+								if (!(roomsDictionary[charge.roomId].rate.priceCharges)) {
+									roomsDictionary[charge.roomId].rate.priceCharges = [];
+								}
+
+								roomsDictionary[charge.roomId].rate.priceCharges.push(priceCharge);
 								roomsDictionary[charge.roomId].rate.price.add(priceCharge);
 							}
 						});
@@ -350,7 +395,7 @@ define(
 
 		HotelSearchResultsModel.prototype.processSearchResults = function (data) {
 			if (data) {
-				_.merge(this.$$rawdata, data);
+				this.$$rawdata = data;
 			}
 
 			var self                = this,
@@ -495,7 +540,7 @@ define(
 				// Тот, кто изначально писал этот код, подумал что будет смешно, если он ВЕЗДЕ расчеты 
 				// связанные со стоимостью чего-либо будет проводить с цифрами, а не с обычными нашими моделями...
 				hotel.hotelPriceOriginal = firstRoomPrice.amount;
-				hotel.hotelPrice = Math.round(hotel.hotelPriceOriginal);
+				hotel.hotelPrice = Math.ceil(hotel.hotelPriceOriginal);
 				hotel.isSpecialOffer = self.isSpecialOfferExist(hotel);
 				hotel.isCorporateRates = self.isСorporateRatesExist(hotel);
 				hotel.hotelChainName = hotel.staticDataInfo.hotelChainName;
@@ -704,17 +749,14 @@ define(
 			});
 
 			function updateMapMarkers(hotels) {
-				var METERS_PER_ONE_KILOMETER = 1000;
+				if (self.maps['map']) {
+					var METERS_PER_ONE_KILOMETER = 1000;
 
-				if (self.circle) {
-					self.circle.setRadius(self.distanceFromCenter.rangeMin() * METERS_PER_ONE_KILOMETER); // sets radius in meters
-				}
+					if (self.circle) {
+						self.circle.setRadius(self.distanceFromCenter.rangeMin() * METERS_PER_ONE_KILOMETER); // sets radius in meters
+					}
 
-				var bounds = self.addMarkersOnMap(hotels);
-
-				if (bounds) {
-					self.maps['map'].fitBounds(bounds);
-					self.maps['map'].panToBounds(bounds);
+					var bounds = self.addMarkersOnMap(hotels);
 				}
 			}
 
@@ -752,7 +794,7 @@ define(
 				return hotels;
 			});
 
-			this.inCircleFilteredHotels.subscribe(function (hotels) {
+			this.preFilteredAndSortedHotels.subscribe(function (hotels) {
 				updateMapMarkers(hotels);
 			});
 
@@ -893,7 +935,9 @@ define(
 			});
 
 			this.showNextHotels = function () {
+				var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
 				self.visibleHotelsCount(self.visibleHotelsCount() + self.lazyLoadHotelsCount());
+				document.documentElement.scrollTop = scrollTop;
 			};
 
 			this.showCaseNextHotels = function () {
