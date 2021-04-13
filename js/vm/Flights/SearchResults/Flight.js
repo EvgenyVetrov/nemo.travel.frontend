@@ -39,6 +39,8 @@ define(
 
 			// Dividing segments by leg
 			for (var i = 0; i < this.segments.length; i++) {
+                if (!this.price.segmentInfo[i]) { continue; } // bizontrip
+
 				this.segments[i].shortInfo = '';
 				this.segments[i].shortInfo += this.segments[i].depAirp.city.name;
 				this.segments[i].shortInfo += '&nbsp;&rarr;&nbsp;';

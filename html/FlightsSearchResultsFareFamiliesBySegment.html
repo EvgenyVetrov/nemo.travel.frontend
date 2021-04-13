@@ -3,6 +3,8 @@
 		beforeOpen: load.bind($data),
 		parentClass: 'js-flights-results__fareFamilies',
 		dialogClass: 'nemo-flights-results__fareFamiliesBySegment__popup',
+		nemo2id: $parent.selectedFlight ? $parent.selectedFlight().nemo2id : $parent.flight ? $parent.flight.nemo2id : 0,
+		testParent: $parent,
 
 
 
@@ -16,8 +18,6 @@
 
 
 	},
-
-
 
 
 

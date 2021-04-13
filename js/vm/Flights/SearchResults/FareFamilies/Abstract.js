@@ -61,6 +61,7 @@ function abstractFareFamiliesControllerCreator(ko) {
 			this.state().fareFamiliesAreLoading(true);
 			this.state().fareFamiliesAreLoaded(false);
 
+
 			return fetch(this.requestURL, { credentials: 'include' })
 				.then(function (response) { return response.json(); })
 				.then(function (data) {

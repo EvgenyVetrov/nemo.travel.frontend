@@ -289,6 +289,13 @@ define(
 						var popupParams = $.extend({},defaults,params),
 							$target = $element.parents('.' + popupParams.parentClass);
 
+
+						console.warn('popupParams', popupParams);
+						if(popupParams.nemo2id) {
+                            window.lastPopupAgencyId = popupParams.nemo2id.split('agid_')[1];
+						}
+
+
 						if (typeof popupParams.beforeOpen === 'function') {
 							popupParams.beforeOpen();
 						}

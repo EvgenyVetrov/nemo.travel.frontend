@@ -106,7 +106,7 @@
 			<div class="nemo-flights-results__error__header" data-bind="text: $root.i18n('FlightsSearchResults', 'error_' + error() + '_header')"></div>
 			<div class="nemo-flights-results__error__content" data-bind="text: forcedMessageAsIs() ? forcedMessageAsIs() : $root.i18n('FlightsSearchResults', 'error_' + error())"></div>
 
-			<!-- ko if: allowСlaimСreation() && error() === 404 -->
+			<!-- ko if: allowClaimCreation() && error() === 404 -->
 				<div class="nemo-flights-results__error__link">
 					<a class="nemo-ui-link" data-bind="text: $root.i18n('FlightsSearchResults', 'error_404_createClaim'),
 					attr: {'href':'/poclaim__create?search_id='+ id}"></a>
@@ -400,7 +400,7 @@
 
 
 
-						text: ((window.primitiveSearch && visibleResultsCount() == totalResultsCount) ? window.allTicketsCounterText : $root.i18n('FlightsSearchResults', 'controls__count_' + (visibleResultsCount() == totalResultsCount ? 'all' : 'filtered')))
+						text: ((window.mode != 'history' && window.primitiveSearch && visibleResultsCount() == totalResultsCount) ? window.allTicketsCounterText : $root.i18n('FlightsSearchResults', 'controls__count_' + (visibleResultsCount() == totalResultsCount ? 'all' : 'filtered')))
 
 
 
@@ -470,7 +470,15 @@
 			<div class="nemo-flights-results__emptyFilterResults">
 	<h2 class="nemo-ui-subSectionHeader nemo-flights-results__emptyFilterResults__header" data-bind="text: $root.i18n('FlightsSearchResults', 'groupsList__noPFResults__header')"></h2>
 
+
+
+
+				<!-- bizontrip -->
+				<!-- ko if: postFilters.length -->
 	<div class="nemo-flights-results__emptyFilterResults__text" data-bind="text: $root.i18n('FlightsSearchResults', 'groupsList__noPFResults__PFList__header')"></div>
+				<!-- /ko -->
+				<!-- end bizontrip -->
+
 
 	<div class="nemo-flights-results__emptyFilterResults__filterList" data-bind="foreach: postFilters"><!-- ko if: hasValue --><div class="nemo-flights-results__emptyFilterResults__filterList__item" data-bind="click: function () {clear();}"><span class="nemo-flights-results__emptyFilterResults__filterList__item__name" data-bind="text: $root.i18n('FlightsSearchResults', 'PF__name_' + config.name)"></span>&nbsp;<!-- ko if: config.isLegged --><span class="nemo-flights-results__emptyFilterResults__filterList__item__additional" data-bind="with: $parent.searchInfo().segments[config.legNumber]"><!-- ko text: departure.name + ' — ' + arrival.name + ' ' + departureDate.getDate() + ' ' + departureDate.getMonthName() --><!-- /ko --></span><!-- /ko --></div><!-- /ko --></div>
 </div>		<!-- /ko -->
@@ -617,7 +625,9 @@
 
 
 
-        css: {'nemo-flight-results__lowestPrice_panel': selectedFlight().isLowestPrice || selectedFlight().isOptimalFlight}">
+        css: {
+			'nemo-flight-results__lowestPrice_panel': selectedFlight().isLowestPrice || selectedFlight().isOptimalFlight,
+		}">
 
 
 
@@ -890,7 +900,7 @@
 
 
 
-                <!-- bizontrip -->
+                <!-- bizontrip кнопка с ценой-->
                 <div class="nemo-ui-button nemo-ui-button_main nemo-flights-results__flightsGroup__buyButton"
 					data-bind="
 						css: {
@@ -898,8 +908,10 @@
 
 							'hidden': window.primitiveSearch,
 							'nemo-ui-button_disabled': (selectedFlightsIds().length == 0) || selectedFlight().tpReject,
+
 							'nemo-flights-results__flightsGroup__buyButton__lowestPrice': selectedFlight().isOptimalFlight,
-							'nemo-flights-results__flightsGroup__buyButton_warning': selectedFlightsIds().length > 0 && selectedFlight().warnings.length
+							'nemo-flights-results__flightsGroup__buyButton_warning': selectedFlightsIds().length > 0 && selectedFlight().warnings.length,
+							'nemo-flights-results__flightsGroup__buyButton__tPwarning': !selectedFlight().tpAccept
 
 
 
@@ -1007,9 +1019,13 @@
 
 
         <!-- bizontrip -->
+		<!-- ko if: window.isShowAgencyNames -->
+		<span class="nemo-flights-results__flightsGroup__managerInfoBlock__item nemo-flights-results__flightsGroup__managerInfoBlock__supplier" data-bind="text: selectedFlight().agencyName"></span>
+		<!-- /ko  -->
         <!-- ko if: window.isTmcCurrentUser -->
         <span class="nemo-flights-results__flightsGroup__managerInfoBlock__item nemo-flights-results__flightsGroup__managerInfoBlock__supplier" data-bind="text: selectedFlight().price.service"></span>
         <!-- /ko  -->
+
         <!-- /bizontrip -->
 
 
@@ -1108,7 +1124,14 @@
 	</div>
 </div></script>
 	<script id="nemo-koTemplate-FlightsResults-Group_list" type="text/html"><div class="nemo-ui-subContainer nemo-flights-results__flightsListGroup js-flights-results__group js-flights-results__fareFamilies" data-bind="
-		css: { 'nemo-flights-results__flightsListGroup__full' : showFullFlightsResults() }">
+		css: {
+
+
+			'nemo-flights-results__flightsListGroup__full' : showFullFlightsResults(),
+			'nemo-flight-results__lowestPrice_panel': selectedFlight().isLowestPrice || selectedFlight().isOptimalFlight,
+
+
+		}">
 	<div class="nemo-flights-results__flightsListGroup__wrapper" data-bind="css: {
 		'nemo-flights-results__flightsListGroup__wrapper_withPadding': selectedFlight().fareFeatures.getFirstFamily() || fareVariationsVisible || selectedFlight().canProcessFareFamilies
 	}">
@@ -1217,7 +1240,9 @@
 
 						'hidden': window.primitiveSearch,
 					    'nemo-ui-button_disabled': selectedFlightsIds().length == 0 || selectedFlight().tpReject,
-						'nemo-flights-results__flightsGroup__buyButton__lowestPrice': selectedFlight().isOptimalFlight,
+						'nemo-flights-results__flightsListGroup__buyButton__lowestPrice': selectedFlight().isOptimalFlight,
+						'nemo-flights-results__flightsListGroup__buyButton__tPwarning': !selectedFlight().tpAccept ,
+
 
 
 
@@ -1250,6 +1275,13 @@
 			            },
 			            text: $root.i18n('FlightsSearchResults', 'flightsGroup__leg__info_caption')
 					"></div>
+
+
+					<!-- bizontrip -->
+					<!-- ko if: window.isShowAgencyNames -->
+					<span class="pr-10 text-muted" data-bind="text: $parent.selectedFlight().agencyName"></span>
+					<!-- /ko  -->
+					<!-- bizontrip -->
 
 				<!-- ko if: dataBuilt -->
 				<!-- ko with: {flight: $parent.selectedFlight(), resultsController: $parent.resultsController} -->

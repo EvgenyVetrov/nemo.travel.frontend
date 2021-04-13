@@ -6,8 +6,17 @@ define(
 			FlightsSearchResultsFareFamiliesController.apply(this, arguments);
 			AbstractFareFamiliesController.apply(this, arguments);
 
+			console.log('this.parentFlight', this.parentFlight);
+			console.log('arguments', arguments);
 			this.parentFlightId = this.parentFlight.id;
-			this.requestURL = this.$$controller.options.dataURL + '/flights/search/fareFamiliesSegmented/' + this.parentFlightId;
+
+			var agencyId = this.parentFlight.nemo2id.split('_agid_')[1];
+            //alert(window.lastPopupAgencyId);
+            var agencyPostfix = '';
+            if (agencyId && agencyId != '0') {
+                agencyPostfix = '_agid_' + agencyId;
+            }
+			this.requestURL = this.$$controller.options.dataURL + '/flights/search/fareFamiliesSegmented/' + this.parentFlightId + agencyPostfix;
 			this.hash = md5(this.parentFlight.id + Math.random() + 'fareFamiliesBySegment');
 		}
 

@@ -912,6 +912,7 @@ define(
 								this.flights[source.flights[j].id] = this.$$controller.getModel(
 									'Flights/SearchResults/Flight',
 									{
+										agencyName: source.flights[j].agencyName, // bizontrip
 										id: source.flights[j].id,
 										nemo2id: source.flights[j].nemo2id,
 										service: source.flights[j].service,
@@ -1293,16 +1294,19 @@ define(
 					direct: true,
 					controller: this,
 					transfersType: this.options.compareTableTransfersType,
-					chaimShow: this.options.allowСlaimСreation
+					chaimShow: this.options.allowClaimCreation
 				}));
 				this.flightsCompareTableTransfer(this.$$controller.getModel('Flights/SearchResults/CompareTable', {
 					groups: this.groups(),
 					direct: false,
 					controller: this,
 					transfersType: this.options.compareTableTransfersType,
-					chaimShow: this.options.allowСlaimСreation
+					chaimShow: this.options.allowClaimCreation
 				}));
 			}
+
+			window.debug1 = this;
+
 		};
 
 		FlightsSearchResultsController.prototype.buildVisibleGroups = function () {
@@ -1654,8 +1658,8 @@ define(
 		FlightsSearchResultsController.prototype.refreshSearch = function () {
 			this.makeSearch('/flights/search/request', 'refreshing', true);
 		};
-		FlightsSearchResultsController.prototype.allowСlaimСreation = function () {
-			return this.options.showBlocks.allowСlaimСreation;
+		FlightsSearchResultsController.prototype.allowClaimCreation = function () {
+			return this.options.showBlocks.allowClaimCreation;
 		};
 
 		FlightsSearchResultsController.prototype.makeSearch = function (url, identifier, replaceURL) {
@@ -1801,6 +1805,8 @@ define(
 		};
 
 		FlightsSearchResultsController.prototype.passengersSummary = function () {
+			console.info('searchInfo', this.searchInfo());
+
 			var ret = '',
 				total = 0,
 				passengers = this.searchInfo().passengers,

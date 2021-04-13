@@ -61,7 +61,7 @@ require(
                 staticInfoURL: nemoStaticUrl,
                 version: 'v1.38.2.1455722074',
                 hostId: document.location.host,
-                root: window.primitiveSearch ? '/flight/search' : nemoBaseUrl,
+                root: (window.primitiveSearch && window.mode != 'history') ? '/flight/search' : nemoBaseUrl,
                 postParameters: {},
                 i18nLanguage: appLanguageId,
                 componentsAdditionalInfo: {
@@ -70,7 +70,7 @@ require(
             },
             controller;
 
-        console.warn(JSON.stringify(options));
+        //console.warn(JSON.stringify(options));
 
         // Before booking flight, replace original Nemo flight ids with Nemo 2 ids.
         AppController.prototype.extend(
@@ -79,12 +79,16 @@ require(
                         var controller = this;
 
                         controller.handleFlightIdsBeforeBooking = function (flightIds) {
+                            console.warn('flightIds init 1', flightIds);
                                 if (flightIds instanceof Array) {
-                                        return flightIds.map(function (flightId) {
+                                        var result = flightIds.map(function (flightId) {
                                                 return controller.flights.hasOwnProperty(flightId) ? controller.flights[flightId].nemo2id : flightId;
                                         });
+                                    console.warn('flights init 1.87', controller.flights);
+                                    return result;
                                 }
                                 else {
+
                                         return flightIds;
                                 }
                         };
@@ -99,9 +103,19 @@ require(
                         var controller = this;
 
                         controller.handleFlightIdsBeforeBooking = function (flightIds) {
+                            console.warn('flightIds init 2', flightIds);
                                 if (flightIds instanceof Array) {
+                                    console.warn('flights init 2.108', controller);
                                         return flightIds.map(function (flightId) {
-                                                return controller.flightsById.hasOwnProperty(flightId) ? controller.flightsById[flightId].nemo2id : flightId;
+                                            var agencyPostfix = '';
+                                            if (window.lastPopupAgencyId && window.lastPopupAgencyId != '0') {
+                                                agencyPostfix = '_agid_' + window.lastPopupAgencyId;
+                                            }
+                                            if (controller.flightsById.hasOwnProperty(flightId)){
+                                                return controller.flightsById[flightId].nemo2id + '' + agencyPostfix;
+                                            } else {
+                                                return flightId + '' + agencyPostfix;
+                                            };
                                         });
                                 }
                                 else {
@@ -170,7 +184,6 @@ require(
                 }
                 return false;
             };
-
             AppController.prototype.checkOptimalFlight = function(flightId) {
                 if (typeof self.$$rawdata.flights.search.results.optimal != 'undefined') {
                     return self.$$rawdata.flights.search.results.optimal.indexOf(flightId) >= 0;
@@ -239,7 +252,7 @@ require(
 );
 
 function set_offline(url) {
-    if (window.tripType == 1) {
+    if (!window.allow_offline_services) {
         disableOfflineForPrivateTrip();
         return;
     }

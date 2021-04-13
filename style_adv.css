@@ -73,27 +73,43 @@
     padding:20px;
 }
 
+.nemo-flights-results__couplingTable__buyButton__tPwarning,
+.nemo-flights-results__flightsListGroup__buyButton__tPwarning,
+.nemo-flights-results__flightsGroup__buyButton__tPwarning{
+    background: #ff9127;
+    box-shadow: 0 4px 8px 0 #f2d2c0,inset 0 1px 2px 0 #ffb66a;
+    color:#fff;
+}
+
+.nemo-flights-results__couplingTable__buyButton__tPwarning:hover,
+.nemo-flights-results__flightsListGroup__buyButton__tPwarning:not(.nemo-flights-results__flightsListGroup__buyButton__lowestPrice):hover,
+.nemo-flights-results__flightsGroup__buyButton__tPwarning:hover{
+    background: #ffa84a;
+}
+
+
 .nemo-flights-results__couplingTable__buyButton,
-.nemo-flights-results__flightsListGroup__buyButton,
-.nemo-flights-results__flightsGroup__buyButton{
-    background:#ffd321;
-    box-shadow: 0 4px 8px 0 #f2e8be,inset 0 1px 2px 0 #ffe064;
+.nemo-flights-results__flightsListGroup__buyButton:not(.nemo-flights-results__flightsListGroup__buyButton__tPwarning):not(.nemo-flights-results__flightsListGroup__buyButton__lowestPrice),
+.nemo-flights-results__flightsGroup__buyButton:not(.nemo-flights-results__flightsGroup__buyButton__tPwarning):not(.nemo-flights-results__flightsGroup__buyButton__lowestPrice) {
+    background: #fedf32; /*#ffd321;*/
+    box-shadow: 0 4px 8px 0 #f2e8be,inset 0 1px 2px 0 #ffe464;
 }
 
 .nemo-flights-results__couplingTable__buyButton,
-.nemo-flights-results__flightsListGroup__buyButton,
-.nemo-flights-results__flightsGroup__buyButton,
+.nemo-flights-results__flightsListGroup__buyButton:not(.nemo-flights-results__flightsListGroup__buyButton__tPwarning):not(.nemo-flights-results__flightsListGroup__buyButton__lowestPrice),
+.nemo-flights-results__flightsGroup__buyButton:not(.nemo-flights-results__flightsGroup__buyButton__tPwarning):not(.nemo-flights-results__flightsGroup__buyButton__lowestPrice),
 .nemo-flights-results__couplingTable__buyButton__text{
-    color:#353b42;
+    color: #353b42;
 }
 
 .nemo-flights-results__couplingTable__buyButton:hover,
-.nemo-flights-results__flightsListGroup__buyButton:hover,
-.nemo-flights-results__flightsGroup__buyButton:hover{
-    background:#ffdb4b;
+.nemo-flights-results__flightsListGroup__buyButton:not(.nemo-flights-results__flightsListGroup__buyButton__tPwarning):not(.nemo-flights-results__flightsListGroup__buyButton__lowestPrice):hover,
+.nemo-flights-results__flightsGroup__buyButton:not(.nemo-flights-results__flightsGroup__buyButton__tPwarning):not(.nemo-flights-results__flightsGroup__buyButton__lowestPrice):hover{
+    background: #ffe768; /*#ffdb4b;*/
 }
 
 .nemo-flights-results__couplingTable__buyButton__lowestPrice,
+.nemo-flights-results__flightsListGroup__buyButton__lowestPrice,
 .nemo-flights-results__flightsGroup__buyButton__lowestPrice{
     background: #88c43d;
     box-shadow: 0 4px 8px 0 rgba(93,134,41,.25),inset 0 1px 2px 0 #b8dc8b;
@@ -279,6 +295,12 @@ padding: 0 !important;
     .nemo-flights-results__content__results {
         -ms-flex-preferred-size:100%;
         flex-basis:100%
+    }
+}
+
+@media (min-width: 940px) and (max-width: 1100px) {
+    .nemo-flights-results__summary__filterSwitch {
+        display: block !important;
     }
 }
 
