@@ -1,6 +1,6 @@
 'use strict';
 define(
-	['knockout', 'js/vm/helpers', 'js/vm/BaseControllerModel', 'jsCookie', 'js/vm/Analytics', 'js/vm/Common/PostFilter/Config'],
+	['knockout', 'js/vm/helpers', 'js/vm/BaseControllerModel', 'jsCookie', 'js/vm/EventManager', 'js/vm/Common/PostFilter/Config'],
 	function (ko, helpers, BaseControllerModel, Cookie, Analytics, PostFilterConfig) {
 		function FlightsSearchResultsController(componentParameters) {
 			BaseControllerModel.apply(this, arguments);
@@ -18,6 +18,7 @@ define(
 					price: null,
 					timeEnRoute: null,
 					transfersDuration: null,
+					subsidyInfo: null,
 					freeBaggage: null
 				}
 			};
@@ -438,7 +439,7 @@ define(
 								url = data.flights.search.flightInfo.createOrderLink;
 							}
 
-							if (data.flights.search.flightInfo.priceStatus.changed && !data.flights.search.flightInfo.hasAltFlights) {
+							if (data.flights.search.flightInfo.priceStatus.changed) {
 								self.resultsLoaded(true);
 								self.bookingCheckInProgress(false);
 								self.bookingCheckPriceChangeData({

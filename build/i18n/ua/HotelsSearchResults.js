@@ -125,12 +125,8 @@ define([],function () {return {
     "bookingCheck__link_to_searchResults": "Повернутися до результатів пошуку",
     "bookingCheck__link_to_mainPage": "Новий пошук",
     "hotels__hotelsChain": "Мережа готелів",
-    "hotels__showcase__corporate__header": "hotels__showcase__corporate__header",
-    "hotels__showcase__showMore": "hotels__showcase__showMore",
-    "hotels__lateCheckOut__time": "hotels__lateCheckOut__time",
-    "hotels__earlyCheckIn__time": "hotels__earlyCheckIn__time",
-    "hotels__lateCheckOut__header": "hotels__lateCheckOut__header",
-    "hotels__lateCheckOut__desc": "hotels__lateCheckOut__desc",
-    "hotels__earlyCheckIn__header": "hotels__earlyCheckIn__header",
-    "hotels__earlyCheckIn__desc": "hotels__earlyCheckIn__desc"
+    "hotels__showcase__corporate__header": "Готелі з корпоративними тарифами",
+    "hotels__showcase__showMore": "Показати ще",
+    "hotels__lateCheckOut__time": "До",
+    "hotels__earlyCheckIn__time": "Після"
 }});
